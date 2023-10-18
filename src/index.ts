@@ -1,3 +1,3 @@
-export function foo() {
-  console.log("Enhanced HTML!");
-}
+import scriptObserver from "./script";
+
+export { scriptObserver };
