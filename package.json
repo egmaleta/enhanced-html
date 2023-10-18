@@ -1,0 +1,35 @@
+{
+  "name": "enhanced-html",
+  "version": "0.0.0",
+  "author": {
+    "name": "Eduardo García Maleta",
+    "email": "egmaleta@proton.me",
+    "url": "https://egmaleta.github.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/egmaleta/enhanced-html.git"
+  },
+  "homepage": "https://github.com/egmaleta/enhanced-html",
+  "bugs": {
+    "url": "https://github.com/egmaleta/enhanced-html/issues"
+  },
+  "license": "MIT",
+  "main": "./dist/eh.js",
+  "module": "./dist/eh.esm.js",
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc && vite build && MINIFY= vite build"
+  },
+  "devDependencies": {
+    "@types/node": "20.8.6",
+    "typescript": "5.2.2",
+    "vite": "4.4.11"
+  }
+}
