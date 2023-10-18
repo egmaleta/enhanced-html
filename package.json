@@ -16,7 +16,6 @@
   },
   "license": "MIT",
   "main": "./dist/eh.js",
-  "module": "./dist/eh.esm.js",
   "files": [
     "dist",
     "src",

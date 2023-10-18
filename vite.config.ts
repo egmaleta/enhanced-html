@@ -7,11 +7,10 @@ export default defineConfig({
     lib: {
       entry: "./src/index.ts",
       name: "Eh",
-      formats: ["es", "umd"],
-      fileName(format) {
-        const fpfx = format === "es" ? ".esm" : "";
+      formats: ["umd"],
+      fileName() {
         const mpfx = minify ? ".min" : "";
-        return `eh${fpfx}${mpfx}.js`;
+        return `eh${mpfx}.js`;
       },
     },
     target: "ES2015",
