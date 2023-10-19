@@ -1,43 +1,38 @@
-import { counter, TwoWayMap } from "./utils";
+import { TwoWayMap, counter, isHTMLElement } from "./utils";
 
-const STORE_NAME = "EhScripted";
-if (!(STORE_NAME in window)) {
-  Object.defineProperty(window, STORE_NAME, {
-    value: new TwoWayMap(),
-  });
-}
+const newParentId = counter();
 
-const REPLACE_RGX = /\$this/g;
+const replaceRgx = /\$this/g;
 
-// @ts-ignore
-const store: TwoWayMap<number, Node> = window[STORE_NAME];
+const nodeToCounter = new Map<Node, ReturnType<typeof counter>>();
 
-const newId = counter();
-const count = counter();
+export const store = new TwoWayMap<number, Node>();
 
-const observer = new MutationObserver((mutationList) => {
-  for (const { type, target, addedNodes } of mutationList) {
-    if (
-      type === "childList" &&
-      target.nodeName !== "HEAD" &&
-      target.nodeName !== "SCRIPT"
-    ) {
-      let targetId = store.keyOf(target);
+export const observer = new MutationObserver((mutationList) => {
+  for (const { target } of mutationList) {
+    if (isHTMLElement(target, "SCRIPT")) {
+      const parent = target.parentNode;
 
-      for (const child of addedNodes) {
-        if (child.nodeName === "SCRIPT" && child.textContent !== null) {
-          if (typeof targetId === "undefined") {
-            targetId = newId();
-            store.set(targetId, target);
-          }
-
-          const varName = `this$${targetId}$${count()}`;
-          const code = child.textContent.replace(REPLACE_RGX, varName);
-
-          child.textContent =
-            `const ${varName} = window["${STORE_NAME}"].get(${targetId});` +
-            code;
+      if (parent && !isHTMLElement(parent, "HEAD")) {
+        let parentId = store.keyOf(parent);
+        if (typeof parentId === "undefined") {
+          parentId = newParentId();
+          store.set(parentId, parent);
         }
+
+        let newTargetId = nodeToCounter.get(parent);
+        if (typeof newTargetId === "undefined") {
+          newTargetId = counter();
+          nodeToCounter.set(parent, newTargetId);
+        }
+
+        const targetId = newTargetId();
+        const varName = `ehlement$${parentId}$${targetId}`;
+        const scriptText = target.firstChild as Text;
+
+        scriptText.data =
+          `const ${varName} = Eh.store.get(${parentId});\n` +
+          scriptText.data.replace(replaceRgx, varName);
       }
     }
   }
@@ -47,5 +42,3 @@ observer.observe(document, {
   subtree: true,
   childList: true,
 });
-
-export default observer;

@@ -1,3 +1,1 @@
-import scriptObserver from "./script";
-
-export { scriptObserver };
+export * from "./script";
