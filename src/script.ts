@@ -1,12 +1,7 @@
-import { TwoWayMap, counter, isHTMLElement } from "./utils";
-
-const newParentId = counter();
-
-const replaceRgx = /\$this/g;
+import { counter, isHTMLElement, newParentId, store } from "./common";
 
 const nodeToCounter = new Map<Node, ReturnType<typeof counter>>();
-
-export const store = new TwoWayMap<number, Node>();
+const replaceRgx = /\$this/g;
 
 export const observer = new MutationObserver((mutationList) => {
   for (const { target } of mutationList) {
@@ -27,7 +22,7 @@ export const observer = new MutationObserver((mutationList) => {
         }
 
         const targetId = newTargetId();
-        const varName = `ehlement$${parentId}$${targetId}`;
+        const varName = `eh_${parentId}_${targetId}`;
         const scriptText = target.firstChild as Text;
 
         scriptText.data =

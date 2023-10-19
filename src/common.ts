@@ -3,6 +3,12 @@ export function counter(initialCount = 0) {
   return () => count++;
 }
 
+export const newParentId = counter();
+
+export function isElement(node: Node): node is Element {
+  return node.nodeType === Node.ELEMENT_NODE;
+}
+
 export function isHTMLElement<K extends Uppercase<keyof HTMLElementTagNameMap>>(
   node: Node,
   tag: K
@@ -10,7 +16,7 @@ export function isHTMLElement<K extends Uppercase<keyof HTMLElementTagNameMap>>(
   return node.nodeName === tag;
 }
 
-export class TwoWayMap<K, V> {
+class TwoWayMap<K, V> {
   private normal = new Map<K, V>();
   private reversed = new Map<V, K>();
 
@@ -25,3 +31,5 @@ export class TwoWayMap<K, V> {
     this.reversed.set(value, key);
   }
 }
+
+export const store = new TwoWayMap<number, Node>();
