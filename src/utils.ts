@@ -16,3 +16,10 @@ export function getEhId(element: HTMLElement) {
 
   return id;
 }
+
+export function isHTMLElement<K extends Uppercase<keyof HTMLElementTagNameMap>>(
+  node: Node,
+  tag: K
+): node is HTMLElementTagNameMap[Lowercase<K>] {
+  return node.nodeName === tag;
+}
