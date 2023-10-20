@@ -24,12 +24,15 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc && vite build && MINIFY= vite build"
+    "build": "vite build && MINIFY= vite build",
+    "test": "MINIFY= vite build && vitest run"
   },
   "devDependencies": {
     "@types/node": "20.8.6",
     "pm": "2.2.6",
+    "puppeteer": "21.4.0",
     "typescript": "5.2.2",
-    "vite": "4.4.11"
+    "vite": "4.4.11",
+    "vitest": "0.34.6"
   }
 }
