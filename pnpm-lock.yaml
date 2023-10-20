@@ -8,6 +8,9 @@ devDependencies:
   '@types/node':
     specifier: 20.8.6
     version: 20.8.6
+  pm:
+    specifier: 2.2.6
+    version: 2.2.6
   typescript:
     specifier: 5.2.2
     version: 5.2.2
@@ -267,6 +270,11 @@ packages:
 
   /picocolors@1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
+    dev: true
+
+  /pm@2.2.6:
+    resolution: {integrity: sha512-zT71ND7r3bb4wj6bndXNWYqOQMfkPrx7j3HqIS7TO9s/8ANuN/WsHzSXBy/R3ead5sk5B5KE559BcC3Hhh7p/Q==}
+    engines: {node: '>=0.9'}
     dev: true
 
   /postcss@8.4.31:
