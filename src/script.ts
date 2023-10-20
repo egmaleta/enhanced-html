@@ -1,4 +1,4 @@
-import { counter, isElement, isHTMLElement, newId } from "./utils";
+import { counter, newId } from "./utils";
 import { ID } from "./eh-attrs";
 
 const nodeToCount = new Map<Node, ReturnType<typeof counter>>();
@@ -6,10 +6,10 @@ const replaceRgx = /\$this/g;
 
 export const observer = new MutationObserver((mutationList) => {
   for (const { target } of mutationList) {
-    if (isHTMLElement(target, "SCRIPT")) {
-      const parent = target.parentNode;
+    if (target.nodeName === "SCRIPT") {
+      const parent = target.parentElement;
 
-      if (parent && isElement(parent) && !isHTMLElement(parent, "HEAD")) {
+      if (parent && parent.nodeName !== "HEAD") {
         let parentEhId = parent.getAttribute(ID);
         if (parentEhId === null) {
           parentEhId = newId().toString();

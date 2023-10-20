@@ -1,14 +1,14 @@
-import { isElement, isHTMLElement, newId } from "./utils";
+import { newId } from "./utils";
 import { ID } from "./eh-attrs";
 
 const replaceRgx = /&/g;
 
 export const observer = new MutationObserver((mutationList) => {
   for (const { target } of mutationList) {
-    if (isHTMLElement(target, "STYLE")) {
-      const parent = target.parentNode;
+    if (target.nodeName === "STYLE") {
+      const parent = target.parentElement;
 
-      if (parent && isElement(parent) && !isHTMLElement(parent, "HEAD")) {
+      if (parent && parent.nodeName !== "HEAD") {
         let parentEhId = parent.getAttribute(ID);
         if (parentEhId === null) {
           parentEhId = newId().toString();
