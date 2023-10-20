@@ -1,4 +1,4 @@
-import { newId } from "./utils";
+import { getEhId } from "./utils";
 import { ID } from "./eh-attrs";
 
 const replaceRgx = /&/g;
@@ -9,13 +9,9 @@ export const observer = new MutationObserver((mutationList) => {
       const parent = target.parentElement;
 
       if (parent && parent.nodeName !== "HEAD") {
-        let parentEhId = parent.getAttribute(ID);
-        if (parentEhId === null) {
-          parentEhId = newId().toString();
-          parent.setAttribute(ID, parentEhId);
-        }
-
+        const parentEhId = getEhId(parent);
         const selector = `[${ID}="${parentEhId}"]`;
+
         const styleText = target.firstChild as Text;
         styleText.data = styleText.data.replace(replaceRgx, selector);
       }

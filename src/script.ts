@@ -1,4 +1,4 @@
-import { counter, newId } from "./utils";
+import { counter, getEhId } from "./utils";
 import { ID } from "./eh-attrs";
 
 const nodeToCount = new Map<Node, ReturnType<typeof counter>>();
@@ -10,22 +10,17 @@ export const observer = new MutationObserver((mutationList) => {
       const parent = target.parentElement;
 
       if (parent && parent.nodeName !== "HEAD") {
-        let parentEhId = parent.getAttribute(ID);
-        if (parentEhId === null) {
-          parentEhId = newId().toString();
-          parent.setAttribute(ID, parentEhId);
-        }
-
         let count = nodeToCount.get(parent);
         if (typeof count === "undefined") {
           count = counter();
           nodeToCount.set(parent, count);
         }
 
+        const parentEhId = getEhId(parent);
         const varName = `eh_${parentEhId}_${count()}`;
         const query = `document.querySelector("[${ID}='${parentEhId}']")`;
-        const scriptText = target.firstChild as Text;
 
+        const scriptText = target.firstChild as Text;
         scriptText.data =
           `const ${varName} = ${query};\n` +
           scriptText.data.replace(replaceRgx, varName);
