@@ -1,6 +1,7 @@
-import { counter, isHTMLElement, newParentId, store } from "./common";
+import { counter, isElement, isHTMLElement, newId } from "./utils";
+import { ID } from "./eh-attrs";
 
-const nodeToCounter = new Map<Node, ReturnType<typeof counter>>();
+const nodeToCount = new Map<Node, ReturnType<typeof counter>>();
 const replaceRgx = /\$this/g;
 
 export const observer = new MutationObserver((mutationList) => {
@@ -8,25 +9,25 @@ export const observer = new MutationObserver((mutationList) => {
     if (isHTMLElement(target, "SCRIPT")) {
       const parent = target.parentNode;
 
-      if (parent && !isHTMLElement(parent, "HEAD")) {
-        let parentId = store.keyOf(parent);
-        if (typeof parentId === "undefined") {
-          parentId = newParentId();
-          store.set(parentId, parent);
+      if (parent && isElement(parent) && !isHTMLElement(parent, "HEAD")) {
+        let parentEhId = parent.getAttribute(ID);
+        if (parentEhId === null) {
+          parentEhId = newId().toString();
+          parent.setAttribute(ID, parentEhId);
         }
 
-        let newTargetId = nodeToCounter.get(parent);
-        if (typeof newTargetId === "undefined") {
-          newTargetId = counter();
-          nodeToCounter.set(parent, newTargetId);
+        let count = nodeToCount.get(parent);
+        if (typeof count === "undefined") {
+          count = counter();
+          nodeToCount.set(parent, count);
         }
 
-        const targetId = newTargetId();
-        const varName = `eh_${parentId}_${targetId}`;
+        const varName = `eh_${parentEhId}_${count()}`;
+        const query = `document.querySelector("[${ID}='${parentEhId}']")`;
         const scriptText = target.firstChild as Text;
 
         scriptText.data =
-          `const ${varName} = Eh.store.get(${parentId});\n` +
+          `const ${varName} = ${query};\n` +
           scriptText.data.replace(replaceRgx, varName);
       }
     }

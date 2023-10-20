@@ -1,4 +1,5 @@
-import { isElement, isHTMLElement, newParentId, store } from "./common";
+import { isElement, isHTMLElement, newId } from "./utils";
+import { ID } from "./eh-attrs";
 
 const replaceRgx = /&/g;
 
@@ -8,19 +9,15 @@ export const observer = new MutationObserver((mutationList) => {
       const parent = target.parentNode;
 
       if (parent && isElement(parent) && !isHTMLElement(parent, "HEAD")) {
-        let parentId = store.keyOf(parent);
-        if (typeof parentId === "undefined") {
-          parentId = newParentId();
-          store.set(parentId, parent);
+        let parentEhId = parent.getAttribute(ID);
+        if (parentEhId === null) {
+          parentEhId = newId().toString();
+          parent.setAttribute(ID, parentEhId);
         }
 
-        const attrName = `eh_${parentId}`;
-        if (!parent.hasAttribute(attrName)) {
-          parent.setAttribute(attrName, "");
-        }
-
+        const selector = `[${ID}="${parentEhId}"]`;
         const styleText = target.firstChild as Text;
-        styleText.data = styleText.data.replace(replaceRgx, `[${attrName}]`);
+        styleText.data = styleText.data.replace(replaceRgx, selector);
       }
     }
   }
