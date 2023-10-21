@@ -1,17 +1,26 @@
-import { getEhId, isHTMLElement } from "./utils";
-import { ID, SKIP } from "./eh-attrs";
+import { EH_SKIP_ATTR, ehElements } from "./common";
+import { isHTMLElement } from "./utils";
+
+const EH_KEY_ATTR = "eh-key";
 
 const replaceRgx = /&/g;
 
-export const observer = new MutationObserver((mutationList) => {
-  for (const { target } of mutationList) {
-    if (isHTMLElement(target, "STYLE") && !target.hasAttribute(SKIP)) {
+export const observer = new MutationObserver((mutations) => {
+  for (const { target } of mutations) {
+    if (isHTMLElement(target, "STYLE") && !target.hasAttribute(EH_SKIP_ATTR)) {
       const parent = target.parentElement;
 
       if (parent && parent.nodeName !== "HEAD") {
-        const parentEhId = getEhId(parent);
-        const selector = `[${ID}="${parentEhId}"]`;
+        let key = ehElements.keyOf(parent);
+        if (typeof key === "undefined") {
+          key = ehElements.register(parent);
+        }
 
+        if (!parent.hasAttribute(EH_KEY_ATTR)) {
+          parent.setAttribute(EH_KEY_ATTR, `${key}`);
+        }
+
+        const selector = `[${EH_KEY_ATTR}="${key}"]`;
         const styleText = target.firstChild as Text;
         styleText.data = styleText.data.replace(replaceRgx, selector);
       }
