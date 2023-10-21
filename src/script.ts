@@ -29,7 +29,7 @@ export const propsCache = new Map<
 export function handle(element: HTMLScriptElement) {
   const parent = element.parentElement;
 
-  if (parent && parent.nodeName !== "HEAD") {
+  if (parent && parent.nodeName !== "HEAD" && element.textContent !== null) {
     let key = ehElements.keyOf(parent);
     if (typeof key === "undefined") {
       key = ehElements.register(parent);
@@ -54,11 +54,10 @@ export function handle(element: HTMLScriptElement) {
     const propsVar = `eh$props$${key}$${count}`;
     const propsVarStmt = `const ${propsVar} = Eh.props.get(${key});\n`;
 
-    const scriptText = element.firstChild as Text;
-    scriptText.data =
+    element.textContent =
       thisVarStmt +
       propsVarStmt +
-      scriptText.data
+      element.textContent
         .replace(replaceThisVarRgx, thisVar)
         .replace(replacePropsVarRgx, propsVar);
   }
