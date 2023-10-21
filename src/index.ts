@@ -1,17 +1,18 @@
 import { EH_SKIP_ATTR, ehElements as elements } from "./common";
 import { handle as handleScript, propsCache as props } from "./script";
 import { handle as handleStyle } from "./style";
-import { isHTMLElement } from "./utils";
+import { isElement, isHTMLElement } from "./utils";
 
 const observer = new MutationObserver((mutations) => {
-  for (const { target } of mutations) {
-    if (isHTMLElement(target, "SCRIPT") && !target.hasAttribute(EH_SKIP_ATTR)) {
-      handleScript(target);
-    } else if (
-      isHTMLElement(target, "STYLE") &&
-      !target.hasAttribute(EH_SKIP_ATTR)
-    ) {
-      handleStyle(target);
+  for (const { addedNodes } of mutations) {
+    for (const node of addedNodes) {
+      if (!isElement(node) || node.hasAttribute(EH_SKIP_ATTR)) continue;
+
+      if (isHTMLElement(node, "SCRIPT")) {
+        handleScript(node);
+      } else if (isHTMLElement(node, "STYLE")) {
+        handleStyle(node);
+      }
     }
   }
 });
