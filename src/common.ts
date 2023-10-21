@@ -1,8 +1,6 @@
-import { counter } from "./utils";
+import { newCounter } from "./utils";
 
-export const EH_SKIP_ATTR = "eh-skip";
-
-const newKey = counter();
+const newKey = newCounter();
 
 class EhElementManager {
   private normal = new Map<number, HTMLElement>();
@@ -24,3 +22,5 @@ class EhElementManager {
 }
 
 export const ehElements = new EhElementManager();
+
+export const EH_SKIP_ATTR = "eh-skip";

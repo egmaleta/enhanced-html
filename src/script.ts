@@ -1,7 +1,7 @@
 import { EH_SKIP_ATTR, ehElements } from "./common";
-import { counter, isHTMLElement } from "./utils";
+import { newCounter, isHTMLElement } from "./utils";
 
-const countMap = new Map<number, ReturnType<typeof counter>>();
+const counterMap = new Map<number, ReturnType<typeof newCounter>>();
 const replaceRgx = /\$this/g;
 
 export const observer = new MutationObserver((mutations) => {
@@ -15,13 +15,13 @@ export const observer = new MutationObserver((mutations) => {
           key = ehElements.register(parent);
         }
 
-        let count = countMap.get(key);
-        if (typeof count === "undefined") {
-          count = counter();
-          countMap.set(key, count);
+        let counter = counterMap.get(key);
+        if (typeof counter === "undefined") {
+          counter = newCounter();
+          counterMap.set(key, counter);
         }
 
-        const varName = `eh$${key}$${count()}`;
+        const varName = `eh$${key}$${counter()}`;
         const stmt = `const ${varName} = Eh.elements.get(${key});\n`;
 
         const scriptText = target.firstChild as Text;
