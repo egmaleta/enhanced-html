@@ -1,5 +1,5 @@
-import { EH_SKIP_ATTR, ehElements } from "./common";
-import { newCounter, isHTMLElement } from "./utils";
+import { ehElements } from "./common";
+import { newCounter } from "./utils";
 
 function getProps(
   element: HTMLElement
@@ -26,49 +26,40 @@ export const propsCache = new Map<
   string | number | boolean | object | null
 >();
 
-export const observer = new MutationObserver((mutations) => {
-  for (const { target } of mutations) {
-    if (isHTMLElement(target, "SCRIPT") && !target.hasAttribute(EH_SKIP_ATTR)) {
-      const parent = target.parentElement;
+export function handle(element: HTMLScriptElement) {
+  const parent = element.parentElement;
 
-      if (parent && parent.nodeName !== "HEAD") {
-        let key = ehElements.keyOf(parent);
-        if (typeof key === "undefined") {
-          key = ehElements.register(parent);
-        }
-
-        let counter = counterMap.get(key);
-        if (typeof counter === "undefined") {
-          counter = newCounter();
-          counterMap.set(key, counter);
-        }
-        const count = counter();
-
-        let props = propsCache.get(key);
-        if (typeof props === "undefined") {
-          props = getProps(parent);
-          propsCache.set(key, props);
-        }
-
-        const thisVar = `eh$element$${key}$${count}`;
-        const thisVarStmt = `const ${thisVar} = Eh.elements.get(${key});\n`;
-
-        const propsVar = `eh$props$${key}$${count}`;
-        const propsVarStmt = `const ${propsVar} = Eh.props.get(${key});\n`;
-
-        const scriptText = target.firstChild as Text;
-        scriptText.data =
-          thisVarStmt +
-          propsVarStmt +
-          scriptText.data
-            .replace(replaceThisVarRgx, thisVar)
-            .replace(replacePropsVarRgx, propsVar);
-      }
+  if (parent && parent.nodeName !== "HEAD") {
+    let key = ehElements.keyOf(parent);
+    if (typeof key === "undefined") {
+      key = ehElements.register(parent);
     }
-  }
-});
 
-observer.observe(document, {
-  subtree: true,
-  childList: true,
-});
+    let counter = counterMap.get(key);
+    if (typeof counter === "undefined") {
+      counter = newCounter();
+      counterMap.set(key, counter);
+    }
+    const count = counter();
+
+    let props = propsCache.get(key);
+    if (typeof props === "undefined") {
+      props = getProps(parent);
+      propsCache.set(key, props);
+    }
+
+    const thisVar = `eh$element$${key}$${count}`;
+    const thisVarStmt = `const ${thisVar} = Eh.elements.get(${key});\n`;
+
+    const propsVar = `eh$props$${key}$${count}`;
+    const propsVarStmt = `const ${propsVar} = Eh.props.get(${key});\n`;
+
+    const scriptText = element.firstChild as Text;
+    scriptText.data =
+      thisVarStmt +
+      propsVarStmt +
+      scriptText.data
+        .replace(replaceThisVarRgx, thisVar)
+        .replace(replacePropsVarRgx, propsVar);
+  }
+}
