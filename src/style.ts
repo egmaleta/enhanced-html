@@ -1,4 +1,4 @@
-import { FROMTEMPL_ATTR, STYLED_ATTR } from "./attrs";
+import { FOR_ATTR, FROMTEMPL_ATTR, KEY_ATTR, STYLED_ATTR } from "./attrs";
 import { ehElements } from "./common";
 
 const replaceRgx = /&/g;
@@ -19,12 +19,12 @@ export function handle(
 
   if (asTemplate === false) {
     const style = document.createElement("style");
+    style.setAttribute(FOR_ATTR, `${key}`);
     style.textContent = sourceStyle.textContent.replace(
       replaceRgx,
-      `[${STYLED_ATTR}="${key}"]`
+      `[${KEY_ATTR}="${key}"]`
     );
     head.appendChild(style);
-    element.setAttribute(STYLED_ATTR, `${key}`);
   } else {
     if (!head.querySelector(`style[${FROMTEMPL_ATTR}="${asTemplate}"]`)) {
       const style = document.createElement("style");
