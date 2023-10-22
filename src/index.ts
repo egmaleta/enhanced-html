@@ -1,17 +1,19 @@
-import { EH_SKIP_ATTR, ehElements as elements } from "./common";
+import { EH_SKIP_ATTR, ehElements } from "./common";
 import { handle as handleScript, propsCache as props } from "./script";
 import { handle as handleStyle } from "./style";
-import { isElement, isHTMLElement } from "./utils";
+import { isHTMLElement } from "./utils";
 
 const observer = new MutationObserver((mutations) => {
-  for (const { addedNodes } of mutations) {
-    for (const node of addedNodes) {
-      if (!isElement(node) || node.hasAttribute(EH_SKIP_ATTR)) continue;
+  for (const { target, addedNodes } of mutations) {
+    if (!isHTMLElement(target)) continue;
 
-      if (isHTMLElement(node, "SCRIPT")) {
-        handleScript(node);
-      } else if (isHTMLElement(node, "STYLE")) {
-        handleStyle(node);
+    for (const node of addedNodes) {
+      if (!isHTMLElement(node) || node.hasAttribute(EH_SKIP_ATTR)) continue;
+
+      if (node.nodeName === "SCRIPT") {
+        handleScript(node, target);
+      } else if (node.nodeName === "STYLE") {
+        handleStyle(node, target);
       }
     }
   }
@@ -22,4 +24,4 @@ observer.observe(document, {
   childList: true,
 });
 
-export { elements, props, observer };
+export { ehElements as elements, props, observer };

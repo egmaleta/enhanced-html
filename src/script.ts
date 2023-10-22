@@ -26,10 +26,8 @@ export const propsCache = new Map<
   string | number | boolean | object | null
 >();
 
-export function handle(element: HTMLScriptElement) {
-  const parent = element.parentElement;
-
-  if (parent && parent.nodeName !== "HEAD" && element.textContent !== null) {
+export function handle(element: HTMLElement, parent: HTMLElement) {
+  if (element.textContent !== null) {
     let key = ehElements.keyOf(parent);
     if (typeof key === "undefined") {
       key = ehElements.register(parent);
