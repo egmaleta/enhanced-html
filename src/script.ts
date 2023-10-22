@@ -7,7 +7,10 @@ function getProps(
   if (typeof raw !== "undefined") {
     try {
       const parsed = JSON.parse(raw);
-      if (typeof parsed !== "undefined") return parsed;
+      if (typeof parsed !== "undefined") {
+        element.removeAttribute("data-eh-props");
+        return parsed;
+      }
     } catch {
       console.log(`Eh:\tcouldn't parse props of ${element}.`);
     }
