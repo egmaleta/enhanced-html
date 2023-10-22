@@ -13,7 +13,7 @@ function getProps(
         return parsed;
       }
     } catch {
-      console.log(`Eh:\tcouldn't parse props of ${element}.`);
+      console.log(`Eh: couldn't parse props of ${element}.`);
     }
   }
   return null;
@@ -48,18 +48,12 @@ export function handle(
   script.setAttribute(FOR_ATTR, `${key}`);
 
   if (asTemplate === false) {
-    script.textContent = `{
-      const $this = Eh.elements.get(${key});
-      const $props = Eh.props.get(${key});
-      ${sourceScript.textContent}
-    }`;
+    script.textContent = `{ const $this = Eh.elements.get(${key}); const $props = Eh.props.get(${key}); ${sourceScript.textContent} }`;
   } else {
     if (!head.querySelector(`script[${FROMTEMPL_ATTR}="${asTemplate}"]`)) {
       const templScript = document.createElement("script");
       templScript.setAttribute(FROMTEMPL_ATTR, asTemplate);
-      templScript.textContent = `function eh$func$${asTemplate}($this, $props){
-        ${sourceScript.textContent}
-      }`;
+      templScript.textContent = `function eh$func$${asTemplate}($this, $props){ ${sourceScript.textContent} }`;
       head.appendChild(templScript);
     }
 
