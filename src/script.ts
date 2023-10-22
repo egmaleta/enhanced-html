@@ -1,4 +1,4 @@
-import { FOR_ATTR, FROMTEMPL_ATTR } from "./attrs";
+import { DATA_ATTR, FOR_ATTR, FROMTEMPL_ATTR } from "./attrs";
 import { ehElements } from "./common";
 
 function getProps(
@@ -9,7 +9,7 @@ function getProps(
     try {
       const parsed = JSON.parse(raw);
       if (typeof parsed !== "undefined") {
-        element.removeAttribute("data-eh-props");
+        element.removeAttribute(DATA_ATTR);
         return parsed;
       }
     } catch {
