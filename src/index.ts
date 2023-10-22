@@ -48,8 +48,6 @@ const observer = new MutationObserver((mutations) => {
               }
             }
           }
-
-          node.removeAttribute(TEMPL_ATTR);
         }
       }
 

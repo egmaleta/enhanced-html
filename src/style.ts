@@ -1,4 +1,4 @@
-import { FOR_ATTR, FROMTEMPL_ATTR, KEY_ATTR, STYLED_ATTR } from "./attrs";
+import { FOR_ATTR, FROMTEMPL_ATTR, KEY_ATTR, TEMPL_ATTR } from "./attrs";
 import { ehElements } from "./common";
 
 const replaceRgx = /&/g;
@@ -31,11 +31,9 @@ export function handle(
       style.setAttribute(FROMTEMPL_ATTR, asTemplate);
       style.textContent = sourceStyle.textContent.replace(
         replaceRgx,
-        `[${STYLED_ATTR}="${asTemplate}"]`
+        `[${TEMPL_ATTR}~="${asTemplate}"]`
       );
       head.appendChild(style);
     }
-
-    element.setAttribute(STYLED_ATTR, asTemplate);
   }
 }
