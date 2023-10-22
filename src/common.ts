@@ -11,6 +11,9 @@ class EhElementManager {
   keyOf(value: HTMLElement) {
     return this.reversed.get(value);
   }
+  has(value: HTMLElement) {
+    return this.reversed.has(value);
+  }
   register(value: HTMLElement) {
     const key = newKey();
 
