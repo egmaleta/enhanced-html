@@ -1,6 +1,5 @@
-import { EH_FROMTEMPL_ATTR, ehElements } from "./common";
-
-const EH_STYLED_ATTR = "eh-styled";
+import { FROMTEMPL_ATTR, STYLED_ATTR } from "./attrs";
+import { ehElements } from "./common";
 
 const replaceRgx = /&/g;
 
@@ -22,21 +21,21 @@ export function handle(
     const style = document.createElement("style");
     style.textContent = sourceStyle.textContent.replace(
       replaceRgx,
-      `[${EH_STYLED_ATTR}="${key}"]`
+      `[${STYLED_ATTR}="${key}"]`
     );
     head.appendChild(style);
-    element.setAttribute(EH_STYLED_ATTR, `${key}`);
+    element.setAttribute(STYLED_ATTR, `${key}`);
   } else {
-    if (!head.querySelector(`style[${EH_FROMTEMPL_ATTR}="${asTemplate}"]`)) {
+    if (!head.querySelector(`style[${FROMTEMPL_ATTR}="${asTemplate}"]`)) {
       const style = document.createElement("style");
-      style.setAttribute(EH_FROMTEMPL_ATTR, asTemplate);
+      style.setAttribute(FROMTEMPL_ATTR, asTemplate);
       style.textContent = sourceStyle.textContent.replace(
         replaceRgx,
-        `[${EH_STYLED_ATTR}="${asTemplate}"]`
+        `[${STYLED_ATTR}="${asTemplate}"]`
       );
       head.appendChild(style);
     }
 
-    element.setAttribute(EH_STYLED_ATTR, asTemplate);
+    element.setAttribute(STYLED_ATTR, asTemplate);
   }
 }

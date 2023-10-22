@@ -1,10 +1,8 @@
+import { EH_ATTR, TEMPL_ATTR } from "./attrs";
 import { ehElements } from "./common";
 import { handle as handleScript, propsCache as props } from "./script";
 import { handle as handleStyle } from "./style";
 import { isHTMLElement, isTaggedHTMLElement } from "./utils";
-
-const EH_ATTR = "eh";
-const EH_TEMPL_ATTR = "eh-templ";
 
 const splitRgx = /\s+/;
 
@@ -24,7 +22,7 @@ const observer = new MutationObserver((mutations) => {
         handleStyle(target, node);
         target.removeChild(node);
       } else {
-        const ids = node.getAttribute(EH_TEMPL_ATTR);
+        const ids = node.getAttribute(TEMPL_ATTR);
         if (ids !== null) {
           for (const id of new Set(ids.trim().split(splitRgx))) {
             const template: HTMLTemplateElement | null = document.querySelector(
@@ -51,7 +49,7 @@ const observer = new MutationObserver((mutations) => {
             }
           }
 
-          node.removeAttribute(EH_TEMPL_ATTR);
+          node.removeAttribute(TEMPL_ATTR);
         }
       }
 

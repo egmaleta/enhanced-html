@@ -26,5 +26,3 @@ class EhElementManager {
 }
 
 export const ehElements = new EhElementManager();
-
-export const EH_FROMTEMPL_ATTR = "eh-fromtempl";

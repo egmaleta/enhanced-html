@@ -1,4 +1,5 @@
-import { EH_FROMTEMPL_ATTR, ehElements } from "./common";
+import { FOR_ATTR, FROMTEMPL_ATTR } from "./attrs";
+import { ehElements } from "./common";
 
 function getProps(
   element: HTMLElement
@@ -23,8 +24,6 @@ export const propsCache = new Map<
   string | number | boolean | object | null
 >();
 
-const EH_FOR_ATTR = "eh-for";
-
 export function handle(
   element: HTMLElement,
   sourceScript: HTMLScriptElement,
@@ -46,7 +45,7 @@ export function handle(
   const head = document.head;
 
   const script = document.createElement("script");
-  script.setAttribute(EH_FOR_ATTR, `${key}`);
+  script.setAttribute(FOR_ATTR, `${key}`);
 
   if (asTemplate === false) {
     script.textContent = `{
@@ -55,9 +54,9 @@ export function handle(
       ${sourceScript.textContent}
     }`;
   } else {
-    if (!head.querySelector(`script[${EH_FROMTEMPL_ATTR}="${asTemplate}"]`)) {
+    if (!head.querySelector(`script[${FROMTEMPL_ATTR}="${asTemplate}"]`)) {
       const templScript = document.createElement("script");
-      templScript.setAttribute(EH_FROMTEMPL_ATTR, asTemplate);
+      templScript.setAttribute(FROMTEMPL_ATTR, asTemplate);
       templScript.textContent = `function eh$func$${asTemplate}($this, $props){
         ${sourceScript.textContent}
       }`;
