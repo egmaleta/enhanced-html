@@ -1,8 +1,9 @@
-import { EH_IGNORE_ATTR, ehElements } from "./common";
+import { ehElements } from "./common";
 import { handle as handleScript, propsCache as props } from "./script";
 import { handle as handleStyle } from "./style";
 import { isHTMLElement } from "./utils";
 
+const EH_ATTR = "eh";
 const EH_TEMPLATE_ATTR = "eh-template";
 
 const observer = new MutationObserver((mutations) => {
@@ -10,11 +11,11 @@ const observer = new MutationObserver((mutations) => {
     if (!isHTMLElement(target)) continue;
 
     for (const node of addedNodes) {
-      if (!isHTMLElement(node) || node.hasAttribute(EH_IGNORE_ATTR)) continue;
+      if (!isHTMLElement(node)) continue;
 
-      if (node.nodeName === "SCRIPT") {
+      if (node.nodeName === "SCRIPT" && node.hasAttribute(EH_ATTR)) {
         handleScript(node, target);
-      } else if (node.nodeName === "STYLE") {
+      } else if (node.nodeName === "STYLE" && node.hasAttribute(EH_ATTR)) {
         handleStyle(node, target);
       } else {
         const id = node.getAttribute(EH_TEMPLATE_ATTR);
@@ -30,10 +31,14 @@ const observer = new MutationObserver((mutations) => {
 
           // script elements do not work by simply appending them
           // so they need to be handled manually
-          if (isHTMLElement(clone) && clone.nodeName === "SCRIPT") {
+          if (
+            isHTMLElement(clone) &&
+            clone.nodeName === "SCRIPT" &&
+            clone.hasAttribute(EH_ATTR)
+          ) {
             !ehElements.has(node) && ehElements.register(node);
             handleScript(clone, node);
-            clone.setAttribute(EH_IGNORE_ATTR, "");
+            clone.removeAttribute(EH_ATTR);
           }
 
           node.appendChild(clone);
