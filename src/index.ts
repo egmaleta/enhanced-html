@@ -44,6 +44,8 @@ const observer = new MutationObserver((mutations) => {
               node.appendChild(clone);
             }
           }
+
+          node.removeAttribute(EH_TEMPLATE_ATTR);
         }
       }
 
