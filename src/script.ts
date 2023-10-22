@@ -1,4 +1,8 @@
-import { ehElements } from "./common";
+import {
+  type UseTemplateOptions,
+  EH_FROMTEMPL_ATTR,
+  ehElements,
+} from "./common";
 
 function getProps(
   element: HTMLElement
@@ -23,7 +27,11 @@ export const propsCache = new Map<
   string | number | boolean | object | null
 >();
 
-export function handle(element: HTMLElement, parent: HTMLElement) {
+export function handleScript(
+  element: HTMLElement,
+  parent: HTMLElement,
+  useTemplate?: UseTemplateOptions
+) {
   if (element.textContent !== null) {
     let key = ehElements.keyOf(parent);
     if (typeof key === "undefined") {
@@ -36,9 +44,27 @@ export function handle(element: HTMLElement, parent: HTMLElement) {
       propsCache.set(key, props);
     }
 
-    const thisVarStmt = `const $this = Eh.elements.get(${key});`;
-    const propsVarStmt = `const $props = Eh.props.get(${key});`;
+    if (!useTemplate) {
+      const thisVarStmt = `const $this = Eh.elements.get(${key});`;
+      const propsVarStmt = `const $props = Eh.props.get(${key});`;
+      element.textContent = `{\n${thisVarStmt}\n${propsVarStmt}\n${element.textContent}}`;
+    } else {
+      const { templateId, templateElement } = useTemplate;
 
-    element.textContent = `{\n${thisVarStmt}\n${propsVarStmt}\n${element.textContent}}`;
+      if (
+        !document.head.querySelector(
+          `script[${EH_FROMTEMPL_ATTR}="${templateId}"]`
+        )
+      ) {
+        const headScript = document.createElement("script");
+        headScript.setAttribute(EH_FROMTEMPL_ATTR, templateId);
+        headScript.textContent = `function eh$func$${templateId}($this, $props){${
+          templateElement.textContent ?? ""
+        }}`;
+        document.head.appendChild(headScript);
+      }
+
+      element.textContent = `eh$func$${templateId}(Eh.elements.get(${key}), Eh.props.get(${key}));`;
+    }
   }
 }
