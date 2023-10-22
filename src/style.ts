@@ -1,6 +1,6 @@
 import { ehElements } from "./common";
 
-const EH_KEY_ATTR = "eh-key";
+const EH_STYLED_ATTR = "eh-styled";
 
 const replaceRgx = /&/g;
 
@@ -11,11 +11,11 @@ export function handle(element: HTMLElement, parent: HTMLElement) {
       key = ehElements.register(parent);
     }
 
-    if (!parent.hasAttribute(EH_KEY_ATTR)) {
-      parent.setAttribute(EH_KEY_ATTR, `${key}`);
+    if (!parent.hasAttribute(EH_STYLED_ATTR)) {
+      parent.setAttribute(EH_STYLED_ATTR, `${key}`);
     }
 
-    const selector = `[${EH_KEY_ATTR}="${key}"]`;
+    const selector = `[${EH_STYLED_ATTR}="${key}"]`;
     element.textContent = element.textContent.replace(replaceRgx, selector);
   }
 }
