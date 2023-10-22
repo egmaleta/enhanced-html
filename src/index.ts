@@ -13,37 +13,41 @@ const observer = new MutationObserver((mutations) => {
     for (const node of addedNodes) {
       if (!isHTMLElement(node)) continue;
 
-      if (node.nodeName === "SCRIPT" && node.hasAttribute(EH_ATTR)) {
+      const hasEhAttr = node.hasAttribute(EH_ATTR);
+
+      if (node.nodeName === "SCRIPT" && hasEhAttr) {
         handleScript(node, target);
-      } else if (node.nodeName === "STYLE" && node.hasAttribute(EH_ATTR)) {
+      } else if (node.nodeName === "STYLE" && hasEhAttr) {
         handleStyle(node, target);
       } else {
         const id = node.getAttribute(EH_TEMPLATE_ATTR);
-        if (id === null) continue;
+        if (id !== null) {
+          const template: HTMLTemplateElement | null = document.querySelector(
+            `template#${id}`
+          );
+          if (template) {
+            for (const child of template.content.childNodes) {
+              const clone = child.cloneNode(true);
 
-        const template: HTMLTemplateElement | null = document.querySelector(
-          `template#${id}`
-        );
-        if (!template) continue;
+              // script elements do not work by simply appending them
+              // so they need to be handled manually
+              if (
+                isHTMLElement(clone) &&
+                clone.nodeName === "SCRIPT" &&
+                clone.hasAttribute(EH_ATTR)
+              ) {
+                !ehElements.has(node) && ehElements.register(node);
+                handleScript(clone, node);
+                clone.removeAttribute(EH_ATTR);
+              }
 
-        for (const child of template.content.childNodes) {
-          const clone = child.cloneNode(true);
-
-          // script elements do not work by simply appending them
-          // so they need to be handled manually
-          if (
-            isHTMLElement(clone) &&
-            clone.nodeName === "SCRIPT" &&
-            clone.hasAttribute(EH_ATTR)
-          ) {
-            !ehElements.has(node) && ehElements.register(node);
-            handleScript(clone, node);
-            clone.removeAttribute(EH_ATTR);
+              node.appendChild(clone);
+            }
           }
-
-          node.appendChild(clone);
         }
       }
+
+      hasEhAttr && node.removeAttribute(EH_ATTR);
     }
   }
 });
