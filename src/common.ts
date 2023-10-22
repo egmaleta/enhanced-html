@@ -1,3 +1,5 @@
+import { KEY_ATTR } from "./attrs";
+
 const newKey = (function () {
   let count = 0;
   return () => count++;
@@ -20,6 +22,8 @@ class EhElementManager {
 
     this.normal.set(key, value);
     this.reversed.set(value, key);
+
+    value.setAttribute(KEY_ATTR, `${key}`);
 
     return key;
   }
