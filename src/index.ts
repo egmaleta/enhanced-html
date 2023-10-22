@@ -1,7 +1,7 @@
 import { ehElements } from "./common";
-import { handleScript, propsCache as props } from "./script";
-import { handleStyle, handleElementStyle } from "./style";
-import { isHTMLElement } from "./utils";
+import { handle as handleScript, propsCache as props } from "./script";
+import { handle as handleStyle } from "./style";
+import { isHTMLElement, isTaggedHTMLElement } from "./utils";
 
 const EH_ATTR = "eh";
 const EH_TEMPL_ATTR = "eh-templ";
@@ -17,10 +17,12 @@ const observer = new MutationObserver((mutations) => {
 
       const hasEhAttr = node.hasAttribute(EH_ATTR);
 
-      if (node.nodeName === "SCRIPT" && hasEhAttr) {
-        handleScript(node, target);
-      } else if (node.nodeName === "STYLE" && hasEhAttr) {
-        handleStyle(node, target);
+      if (isTaggedHTMLElement(node, "SCRIPT") && hasEhAttr) {
+        handleScript(target, node);
+        target.removeChild(node);
+      } else if (isTaggedHTMLElement(node, "STYLE") && hasEhAttr) {
+        handleStyle(target, node);
+        target.removeChild(node);
       } else {
         const ids = node.getAttribute(EH_TEMPL_ATTR);
         if (ids !== null) {
@@ -33,25 +35,15 @@ const observer = new MutationObserver((mutations) => {
                 // script elements do not work by simply appending them
                 // so they need to be handled manually
                 if (
-                  isHTMLElement(child) &&
-                  child.nodeName === "SCRIPT" &&
+                  isTaggedHTMLElement(child, "SCRIPT") &&
                   child.hasAttribute(EH_ATTR)
                 ) {
-                  const script = document.createElement("script");
-                  handleScript(script, node, {
-                    templateId: id,
-                    templateElement: child,
-                  });
-                  node.appendChild(script);
+                  handleScript(node, child, id);
                 } else if (
-                  isHTMLElement(child) &&
-                  child.nodeName === "STYLE" &&
+                  isTaggedHTMLElement(child, "STYLE") &&
                   child.hasAttribute(EH_ATTR)
                 ) {
-                  handleElementStyle(node, {
-                    templateId: id,
-                    templateElement: child,
-                  });
+                  handleStyle(node, child, id);
                 } else {
                   node.appendChild(child.cloneNode(true));
                 }

@@ -27,9 +27,4 @@ class EhElementManager {
 
 export const ehElements = new EhElementManager();
 
-export interface UseTemplateOptions {
-  templateId: string;
-  templateElement: HTMLElement;
-}
-
 export const EH_FROMTEMPL_ATTR = "eh-fromtempl";

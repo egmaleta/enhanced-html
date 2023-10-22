@@ -1,51 +1,42 @@
-import {
-  type UseTemplateOptions,
-  EH_FROMTEMPL_ATTR,
-  ehElements,
-} from "./common";
+import { EH_FROMTEMPL_ATTR, ehElements } from "./common";
 
 const EH_STYLED_ATTR = "eh-styled";
 
 const replaceRgx = /&/g;
 
-export function handleStyle(element: HTMLElement, parent: HTMLElement) {
-  if (element.textContent !== null) {
-    let key = ehElements.keyOf(parent);
-    if (typeof key === "undefined") {
-      key = ehElements.register(parent);
-    }
-
-    if (!parent.hasAttribute(EH_STYLED_ATTR)) {
-      parent.setAttribute(EH_STYLED_ATTR, `${key}`);
-    }
-
-    const selector = `[${EH_STYLED_ATTR}="${key}"]`;
-    element.textContent = element.textContent.replace(replaceRgx, selector);
-  }
-}
-
-export function handleElementStyle(
+export function handle(
   element: HTMLElement,
-  useTemplate: UseTemplateOptions
+  sourceStyle: HTMLStyleElement,
+  asTemplate: string | false = false
 ) {
-  const { templateId, templateElement } = useTemplate;
-  if (templateElement.textContent !== null) {
-    const selector = `[${EH_STYLED_ATTR}="${templateId}"]`;
+  if (sourceStyle.textContent === null) return;
 
-    if (
-      !document.head.querySelector(
-        `style[${EH_FROMTEMPL_ATTR}="${templateId}"]`
-      )
-    ) {
-      const headStyle = document.createElement("style");
-      headStyle.setAttribute(EH_FROMTEMPL_ATTR, templateId);
-      headStyle.textContent = templateElement.textContent.replace(
+  let key = ehElements.keyOf(element);
+  if (typeof key === "undefined") {
+    key = ehElements.register(element);
+  }
+
+  const head = document.head;
+
+  if (asTemplate === false) {
+    const style = document.createElement("style");
+    style.textContent = sourceStyle.textContent.replace(
+      replaceRgx,
+      `[${EH_STYLED_ATTR}="${key}"]`
+    );
+    head.appendChild(style);
+    element.setAttribute(EH_STYLED_ATTR, `${key}`);
+  } else {
+    if (!head.querySelector(`style[${EH_FROMTEMPL_ATTR}="${asTemplate}"]`)) {
+      const style = document.createElement("style");
+      style.setAttribute(EH_FROMTEMPL_ATTR, asTemplate);
+      style.textContent = sourceStyle.textContent.replace(
         replaceRgx,
-        selector
+        `[${EH_STYLED_ATTR}="${asTemplate}"]`
       );
-      document.head.appendChild(headStyle);
+      head.appendChild(style);
     }
 
-    element.setAttribute(EH_STYLED_ATTR, templateId);
+    element.setAttribute(EH_STYLED_ATTR, asTemplate);
   }
 }

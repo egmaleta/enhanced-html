@@ -1,8 +1,4 @@
-import {
-  type UseTemplateOptions,
-  EH_FROMTEMPL_ATTR,
-  ehElements,
-} from "./common";
+import { EH_FROMTEMPL_ATTR, ehElements } from "./common";
 
 function getProps(
   element: HTMLElement
@@ -27,44 +23,49 @@ export const propsCache = new Map<
   string | number | boolean | object | null
 >();
 
-export function handleScript(
+const EH_FOR_ATTR = "eh-for";
+
+export function handle(
   element: HTMLElement,
-  parent: HTMLElement,
-  useTemplate?: UseTemplateOptions
+  sourceScript: HTMLScriptElement,
+  asTemplate: string | false = false
 ) {
-  if (element.textContent !== null) {
-    let key = ehElements.keyOf(parent);
-    if (typeof key === "undefined") {
-      key = ehElements.register(parent);
-    }
+  if (sourceScript.textContent === null) return;
 
-    let props = propsCache.get(key);
-    if (typeof props === "undefined") {
-      props = getProps(parent);
-      propsCache.set(key, props);
-    }
-
-    if (!useTemplate) {
-      const thisVarStmt = `const $this = Eh.elements.get(${key});`;
-      const propsVarStmt = `const $props = Eh.props.get(${key});`;
-      element.textContent = `{\n${thisVarStmt}\n${propsVarStmt}\n${element.textContent}}`;
-    } else {
-      const { templateId, templateElement } = useTemplate;
-
-      if (
-        !document.head.querySelector(
-          `script[${EH_FROMTEMPL_ATTR}="${templateId}"]`
-        )
-      ) {
-        const headScript = document.createElement("script");
-        headScript.setAttribute(EH_FROMTEMPL_ATTR, templateId);
-        headScript.textContent = `function eh$func$${templateId}($this, $props){${
-          templateElement.textContent ?? ""
-        }}`;
-        document.head.appendChild(headScript);
-      }
-
-      element.textContent = `eh$func$${templateId}(Eh.elements.get(${key}), Eh.props.get(${key}));`;
-    }
+  let key = ehElements.keyOf(element);
+  if (typeof key === "undefined") {
+    key = ehElements.register(element);
   }
+
+  let props = propsCache.get(key);
+  if (typeof props === "undefined") {
+    props = getProps(element);
+    propsCache.set(key, props);
+  }
+
+  const head = document.head;
+
+  const script = document.createElement("script");
+  script.setAttribute(EH_FOR_ATTR, `${key}`);
+
+  if (asTemplate === false) {
+    script.textContent = `{
+      const $this = Eh.elements.get(${key});
+      const $props = Eh.props.get(${key});
+      ${sourceScript.textContent}
+    }`;
+  } else {
+    if (!head.querySelector(`script[${EH_FROMTEMPL_ATTR}="${asTemplate}"]`)) {
+      const templScript = document.createElement("script");
+      templScript.setAttribute(EH_FROMTEMPL_ATTR, asTemplate);
+      templScript.textContent = `function eh$func$${asTemplate}($this, $props){
+        ${sourceScript.textContent}
+      }`;
+      head.appendChild(templScript);
+    }
+
+    script.textContent = `eh$func$${asTemplate}(Eh.elements.get(${key}), Eh.props.get(${key}));`;
+  }
+
+  head.appendChild(script);
 }
