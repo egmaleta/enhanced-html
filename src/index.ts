@@ -1,6 +1,6 @@
 import { ehElements } from "./common";
 import { handleScript, propsCache as props } from "./script";
-import { handle as handleStyle } from "./style";
+import { handleStyle, handleElementStyle } from "./style";
 import { isHTMLElement } from "./utils";
 
 const EH_ATTR = "eh";
@@ -43,6 +43,15 @@ const observer = new MutationObserver((mutations) => {
                     templateElement: child,
                   });
                   node.appendChild(script);
+                } else if (
+                  isHTMLElement(child) &&
+                  child.nodeName === "STYLE" &&
+                  child.hasAttribute(EH_ATTR)
+                ) {
+                  handleElementStyle(node, {
+                    templateId: id,
+                    templateElement: child,
+                  });
                 } else {
                   node.appendChild(child.cloneNode(true));
                 }
