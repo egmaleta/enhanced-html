@@ -1,5 +1,4 @@
 import { ehElements } from "./common";
-import { newCounter } from "./utils";
 
 function getProps(
   element: HTMLElement
@@ -16,11 +15,6 @@ function getProps(
   return null;
 }
 
-const counterMap = new Map<number, ReturnType<typeof newCounter>>();
-
-const replaceThisVarRgx = /\$this/g;
-const replacePropsVarRgx = /\$props/g;
-
 export const propsCache = new Map<
   number,
   string | number | boolean | object | null
@@ -33,30 +27,15 @@ export function handle(element: HTMLElement, parent: HTMLElement) {
       key = ehElements.register(parent);
     }
 
-    let counter = counterMap.get(key);
-    if (typeof counter === "undefined") {
-      counter = newCounter();
-      counterMap.set(key, counter);
-    }
-    const count = counter();
-
     let props = propsCache.get(key);
     if (typeof props === "undefined") {
       props = getProps(parent);
       propsCache.set(key, props);
     }
 
-    const thisVar = `eh$element$${key}$${count}`;
-    const thisVarStmt = `const ${thisVar} = Eh.elements.get(${key});\n`;
+    const thisVarStmt = `const $this = Eh.elements.get(${key});`;
+    const propsVarStmt = `const $props = Eh.props.get(${key});`;
 
-    const propsVar = `eh$props$${key}$${count}`;
-    const propsVarStmt = `const ${propsVar} = Eh.props.get(${key});\n`;
-
-    element.textContent =
-      thisVarStmt +
-      propsVarStmt +
-      element.textContent
-        .replace(replaceThisVarRgx, thisVar)
-        .replace(replacePropsVarRgx, propsVar);
+    element.textContent = `{\n${thisVarStmt}\n${propsVarStmt}\n${element.textContent}}`;
   }
 }

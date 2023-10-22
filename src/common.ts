@@ -1,6 +1,7 @@
-import { newCounter } from "./utils";
-
-const newKey = newCounter();
+const newKey = (function () {
+  let count = 0;
+  return () => count++;
+})();
 
 class EhElementManager {
   private normal = new Map<number, HTMLElement>();
