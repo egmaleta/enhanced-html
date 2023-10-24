@@ -6,7 +6,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: "./src/index.ts",
-      name: "Eh",
+      name: "eh",
       formats: ["umd"],
       fileName() {
         const mpfx = minify ? ".min" : "";

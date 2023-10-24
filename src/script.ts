@@ -13,7 +13,7 @@ function getProps(
         return parsed;
       }
     } catch {
-      console.log(`Eh: couldn't parse props of ${element}.`);
+      console.log(`eh: couldn't parse props of ${element}.`);
     }
   }
   return null;
@@ -48,7 +48,7 @@ export function handle(
   script.setAttribute(FOR_ATTR, `${key}`);
 
   if (asTemplate === false) {
-    script.textContent = `{ const $this = Eh.elements.get(${key}); const $props = Eh.props.get(${key}); ${sourceScript.textContent} }`;
+    script.textContent = `{ const $this = eh.elements.get(${key}); const $props = eh.props.get(${key}); ${sourceScript.textContent} }`;
   } else {
     if (!head.querySelector(`script[${FROMTEMPL_ATTR}="${asTemplate}"]`)) {
       const templScript = document.createElement("script");
@@ -57,7 +57,7 @@ export function handle(
       head.appendChild(templScript);
     }
 
-    script.textContent = `eh$func$${asTemplate}(Eh.elements.get(${key}), Eh.props.get(${key}));`;
+    script.textContent = `eh$func$${asTemplate}(eh.elements.get(${key}), eh.props.get(${key}));`;
   }
 
   head.appendChild(script);
