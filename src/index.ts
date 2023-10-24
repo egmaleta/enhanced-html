@@ -1,6 +1,6 @@
 import { EH_ATTR, TEMPL_ATTR } from "./attrs";
 import { ehElements } from "./common";
-import { handle as handleScript, propsCache as props } from "./script";
+import { handle as handleScript } from "./script";
 import { handle as handleStyle } from "./style";
 import { isHTMLElement, isTaggedHTMLElement } from "./utils";
 
@@ -61,4 +61,4 @@ observer.observe(document, {
   childList: true,
 });
 
-export { ehElements as elements, props, observer };
+export { ehElements as elements, observer };

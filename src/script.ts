@@ -1,28 +1,5 @@
-import { DATA_ATTR, FOR_ATTR, FROMTEMPL_ATTR } from "./attrs";
+import { FOR_ATTR, FROMTEMPL_ATTR } from "./attrs";
 import { ehElements } from "./common";
-
-function getProps(
-  element: HTMLElement
-): string | number | boolean | object | null {
-  const raw = element.dataset.ehProps;
-  if (typeof raw !== "undefined") {
-    try {
-      const parsed = JSON.parse(raw);
-      if (typeof parsed !== "undefined") {
-        element.removeAttribute(DATA_ATTR);
-        return parsed;
-      }
-    } catch {
-      console.log(`eh: couldn't parse props of ${element}.`);
-    }
-  }
-  return null;
-}
-
-export const propsCache = new Map<
-  number,
-  string | number | boolean | object | null
->();
 
 export function handle(
   element: HTMLElement,
@@ -36,28 +13,22 @@ export function handle(
     key = ehElements.register(element);
   }
 
-  let props = propsCache.get(key);
-  if (typeof props === "undefined") {
-    props = getProps(element);
-    propsCache.set(key, props);
-  }
-
   const head = document.head;
 
   const script = document.createElement("script");
   script.setAttribute(FOR_ATTR, `${key}`);
 
   if (asTemplate === false) {
-    script.textContent = `(function ($this, $props) { ${sourceScript.textContent} })(eh.elements.get(${key}), eh.props.get(${key}));`;
+    script.textContent = `(function ($this) { ${sourceScript.textContent} })(eh.elements.get(${key}));`;
   } else {
     if (!head.querySelector(`script[${FROMTEMPL_ATTR}="${asTemplate}"]`)) {
       const templScript = document.createElement("script");
       templScript.setAttribute(FROMTEMPL_ATTR, asTemplate);
-      templScript.textContent = `function eh$func$${asTemplate}($this, $props){ ${sourceScript.textContent} }`;
+      templScript.textContent = `function eh$func$${asTemplate}($this){ ${sourceScript.textContent} }`;
       head.appendChild(templScript);
     }
 
-    script.textContent = `eh$func$${asTemplate}(eh.elements.get(${key}), eh.props.get(${key}));`;
+    script.textContent = `eh$func$${asTemplate}(eh.elements.get(${key}));`;
   }
 
   head.appendChild(script);
