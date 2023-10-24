@@ -1,7 +1,11 @@
-export const FOR_ATTR = "eh-for";
-export const FROMTEMPL_ATTR = "eh-from-templ";
-export const KEY_ATTR = "eh-key";
+type EhAttr = `eh-${string}` | "eh";
 
-// used by developer
-export const EH_ATTR = "eh";
-export const TEMPL_ATTR = "eh-templ";
+export default {
+  FOR: "eh-for",
+  FROM_TEMPLATE: "eh-from-template",
+  KEY: "eh-key",
+
+  // used by devs
+  EH: "eh",
+  TEMPLATE: "eh-template",
+} satisfies Record<string, EhAttr>;

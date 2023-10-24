@@ -1,4 +1,4 @@
-import { EH_ATTR, TEMPL_ATTR } from "./attrs";
+import attrs from "./attrs";
 import { ehElements } from "./common";
 import { handle as handleScript } from "./script";
 import { handle as handleStyle } from "./style";
@@ -13,7 +13,7 @@ const observer = new MutationObserver((mutations) => {
     for (const node of addedNodes) {
       if (!isHTMLElement(node)) continue;
 
-      const hasEhAttr = node.hasAttribute(EH_ATTR);
+      const hasEhAttr = node.hasAttribute(attrs.EH);
 
       if (isTaggedHTMLElement(node, "SCRIPT") && hasEhAttr) {
         handleScript(target, node);
@@ -22,7 +22,7 @@ const observer = new MutationObserver((mutations) => {
         handleStyle(target, node);
         target.removeChild(node);
       } else {
-        const ids = node.getAttribute(TEMPL_ATTR);
+        const ids = node.getAttribute(attrs.TEMPLATE);
         if (ids !== null) {
           for (const id of new Set(ids.trim().split(splitRgx))) {
             const template: HTMLTemplateElement | null = document.querySelector(
@@ -34,12 +34,12 @@ const observer = new MutationObserver((mutations) => {
                 // so they need to be handled manually
                 if (
                   isTaggedHTMLElement(child, "SCRIPT") &&
-                  child.hasAttribute(EH_ATTR)
+                  child.hasAttribute(attrs.EH)
                 ) {
                   handleScript(node, child, id);
                 } else if (
                   isTaggedHTMLElement(child, "STYLE") &&
-                  child.hasAttribute(EH_ATTR)
+                  child.hasAttribute(attrs.EH)
                 ) {
                   handleStyle(node, child, id);
                 } else {
@@ -51,7 +51,7 @@ const observer = new MutationObserver((mutations) => {
         }
       }
 
-      hasEhAttr && node.removeAttribute(EH_ATTR);
+      hasEhAttr && node.removeAttribute(attrs.EH);
     }
   }
 });

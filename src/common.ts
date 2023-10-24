@@ -1,4 +1,4 @@
-import { KEY_ATTR } from "./attrs";
+import attrs from "./attrs";
 
 const newKey = (function () {
   let count = 0;
@@ -23,7 +23,7 @@ class EhElementManager {
     this.normal.set(key, value);
     this.reversed.set(value, key);
 
-    value.setAttribute(KEY_ATTR, `${key}`);
+    value.setAttribute(attrs.KEY, `${key}`);
 
     return key;
   }

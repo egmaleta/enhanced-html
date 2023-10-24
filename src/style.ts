@@ -1,4 +1,4 @@
-import { FOR_ATTR, FROMTEMPL_ATTR, KEY_ATTR, TEMPL_ATTR } from "./attrs";
+import attrs from "./attrs";
 import { ehElements } from "./common";
 
 const replaceRgx = /&/g;
@@ -19,19 +19,19 @@ export function handle(
 
   if (asTemplate === false) {
     const style = document.createElement("style");
-    style.setAttribute(FOR_ATTR, `${key}`);
+    style.setAttribute(attrs.FOR, `${key}`);
     style.textContent = sourceStyle.textContent.replace(
       replaceRgx,
-      `[${KEY_ATTR}="${key}"]`
+      `[${attrs.KEY}="${key}"]`
     );
     head.appendChild(style);
   } else {
-    if (!head.querySelector(`style[${FROMTEMPL_ATTR}="${asTemplate}"]`)) {
+    if (!head.querySelector(`style[${attrs.FROM_TEMPLATE}="${asTemplate}"]`)) {
       const style = document.createElement("style");
-      style.setAttribute(FROMTEMPL_ATTR, asTemplate);
+      style.setAttribute(attrs.FROM_TEMPLATE, asTemplate);
       style.textContent = sourceStyle.textContent.replace(
         replaceRgx,
-        `[${TEMPL_ATTR}~="${asTemplate}"]`
+        `[${attrs.TEMPLATE}~="${asTemplate}"]`
       );
       head.appendChild(style);
     }

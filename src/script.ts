@@ -1,4 +1,4 @@
-import { FOR_ATTR, FROMTEMPL_ATTR } from "./attrs";
+import attrs from "./attrs";
 import { ehElements } from "./common";
 
 export function handle(
@@ -16,14 +16,14 @@ export function handle(
   const head = document.head;
 
   const script = document.createElement("script");
-  script.setAttribute(FOR_ATTR, `${key}`);
+  script.setAttribute(attrs.FOR, `${key}`);
 
   if (asTemplate === false) {
     script.textContent = `(function ($this) { ${sourceScript.textContent} })(eh.elements.get(${key}));`;
   } else {
-    if (!head.querySelector(`script[${FROMTEMPL_ATTR}="${asTemplate}"]`)) {
+    if (!head.querySelector(`script[${attrs.FROM_TEMPLATE}="${asTemplate}"]`)) {
       const templScript = document.createElement("script");
-      templScript.setAttribute(FROMTEMPL_ATTR, asTemplate);
+      templScript.setAttribute(attrs.FROM_TEMPLATE, asTemplate);
       templScript.textContent = `function eh$func$${asTemplate}($this){ ${sourceScript.textContent} }`;
       head.appendChild(templScript);
     }
