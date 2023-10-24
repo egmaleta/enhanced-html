@@ -48,7 +48,7 @@ export function handle(
   script.setAttribute(FOR_ATTR, `${key}`);
 
   if (asTemplate === false) {
-    script.textContent = `{ const $this = eh.elements.get(${key}); const $props = eh.props.get(${key}); ${sourceScript.textContent} }`;
+    script.textContent = `(function ($this, $props) { ${sourceScript.textContent} })(eh.elements.get(${key}), eh.props.get(${key}));`;
   } else {
     if (!head.querySelector(`script[${FROMTEMPL_ATTR}="${asTemplate}"]`)) {
       const templScript = document.createElement("script");
