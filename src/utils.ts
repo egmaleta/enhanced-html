@@ -24,3 +24,9 @@ export function keyOf(element: HTMLElement) {
 
   return key;
 }
+
+const extraSpaceRgx = /\s+/;
+
+export function tokenizeAttr(attr: string) {
+  return attr.trim().split(extraSpaceRgx);
+}

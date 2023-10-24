@@ -1,15 +1,13 @@
 import attrs from "./attrs";
 import { handle as handleScript } from "./script";
 import { handle as handleStyle } from "./style";
-import { isHTMLElement, isTaggedHTMLElement } from "./utils";
-
-const splitRgx = /\s+/;
+import { isHTMLElement, isTaggedHTMLElement, tokenizeAttr } from "./utils";
 
 export function handle(element: HTMLElement) {
   const ids = element.getAttribute(attrs.TEMPLATE);
   if (ids === null) return;
 
-  for (const id of new Set(ids.trim().split(splitRgx))) {
+  for (const id of new Set(tokenizeAttr(ids))) {
     const template = document.querySelector<HTMLTemplateElement>(
       `template#${id}`
     );
