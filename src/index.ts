@@ -1,5 +1,4 @@
 import attrs from "./attrs";
-import { ehElements } from "./common";
 import { handle as handleScript } from "./script";
 import { handle as handleStyle } from "./style";
 import { handle as handleTemplate } from "./template";
@@ -35,4 +34,4 @@ observer.observe(document, {
   childList: true,
 });
 
-export { ehElements as elements, observer };
+export { observer };

@@ -1,5 +1,5 @@
 import attrs from "./attrs";
-import { ehElements } from "./common";
+import { keyOf } from "./utils";
 
 const replaceRgx = /&/g;
 
@@ -10,16 +10,13 @@ export function handle(
 ) {
   if (sourceStyle.textContent === null) return;
 
-  let key = ehElements.keyOf(element);
-  if (typeof key === "undefined") {
-    key = ehElements.register(element);
-  }
+  const key = keyOf(element);
 
   const head = document.head;
 
   if (asTemplate === false) {
     const style = document.createElement("style");
-    style.setAttribute(attrs.FOR, `${key}`);
+    style.setAttribute(attrs.FOR, key);
     style.textContent = sourceStyle.textContent.replace(
       replaceRgx,
       `[${attrs.KEY}="${key}"]`

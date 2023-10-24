@@ -1,5 +1,18 @@
 import attrs from "./attrs";
-import { ehElements } from "./common";
+import { keyOf } from "./utils";
+
+const templateFuncDec = (scriptContent: string, templateName: string) =>
+  `function eh$func$${templateName}($this) {
+  ${scriptContent}
+}`;
+
+const templateFuncCall = (elementQueryExpr: string, templateName: string) =>
+  `eh$func$${templateName}(${elementQueryExpr});`;
+
+const anonFuncCall = (elementQueryExpr: string, scriptContent: string) =>
+  `(function ($this) {
+  ${scriptContent}
+})(${elementQueryExpr});`;
 
 export function handle(
   element: HTMLElement,
@@ -8,27 +21,29 @@ export function handle(
 ) {
   if (sourceScript.textContent === null) return;
 
-  let key = ehElements.keyOf(element);
-  if (typeof key === "undefined") {
-    key = ehElements.register(element);
-  }
+  const key = keyOf(element);
 
   const head = document.head;
 
   const script = document.createElement("script");
   script.setAttribute(attrs.FOR, `${key}`);
 
+  const queryExpr = `document.querySelector("[${attrs.KEY}='${key}']")`;
+
   if (asTemplate === false) {
-    script.textContent = `(function ($this) { ${sourceScript.textContent} })(eh.elements.get(${key}));`;
+    script.textContent = anonFuncCall(queryExpr, sourceScript.textContent);
   } else {
     if (!head.querySelector(`script[${attrs.FROM_TEMPLATE}="${asTemplate}"]`)) {
       const templScript = document.createElement("script");
       templScript.setAttribute(attrs.FROM_TEMPLATE, asTemplate);
-      templScript.textContent = `function eh$func$${asTemplate}($this){ ${sourceScript.textContent} }`;
+      templScript.textContent = templateFuncDec(
+        sourceScript.textContent,
+        asTemplate
+      );
       head.appendChild(templScript);
     }
 
-    script.textContent = `eh$func$${asTemplate}(eh.elements.get(${key}));`;
+    script.textContent = templateFuncCall(queryExpr, asTemplate);
   }
 
   head.appendChild(script);
