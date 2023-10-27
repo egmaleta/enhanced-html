@@ -4,11 +4,10 @@
   "license": "MIT",
   "main": "./dist/eh.js",
   "files": [
-    "./dist",
-    "./src",
+    "dist",
+    "src",
     "package.json",
-    "./README.md",
-    "../../LICENSE"
+    "README.md"
   ],
   "scripts": {
     "build": "tsc && vite build",
