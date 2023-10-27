@@ -1,0 +1,15 @@
+{
+  "name": "@enhanced-html/x",
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "./dist/eh.js",
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc && vite build"
+  }
+}
