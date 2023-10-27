@@ -8,4 +8,5 @@ export default {
   // used by devs
   EH: "eh",
   TEMPLATE: "eh-template",
+  PROPS: "eh-props",
 } satisfies Record<string, EhAttr>;

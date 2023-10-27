@@ -2,17 +2,24 @@ import attrs from "./attrs";
 import { keyOf } from "./utils";
 
 const templateFuncDec = (scriptContent: string, templateName: string) =>
-  `function eh$func$${templateName}($this) {
+  `function eh$func$${templateName}($this, $props) {
   ${scriptContent}
 }`;
 
-const templateFuncCall = (elementQueryExpr: string, templateName: string) =>
-  `eh$func$${templateName}(${elementQueryExpr});`;
+const templateFuncCall = (
+  queryExpr: string,
+  propsExpr: string,
+  templateName: string
+) => `eh$func$${templateName}(${queryExpr}, ${propsExpr});`;
 
-const anonFuncCall = (elementQueryExpr: string, scriptContent: string) =>
-  `(function ($this) {
+const anonFuncCall = (
+  queryExpr: string,
+  propsExpr: string,
+  scriptContent: string
+) =>
+  `(function ($this, $props) {
   ${scriptContent}
-})(${elementQueryExpr});`;
+})(${queryExpr}, ${propsExpr});`;
 
 export function handle(
   element: HTMLElement,
@@ -28,10 +35,22 @@ export function handle(
   const script = document.createElement("script");
   script.setAttribute(attrs.FOR, `${key}`);
 
-  const queryExpr = `document.querySelector("[${attrs.KEY}='${key}']")`;
+  const queryExpr = `document.querySelector(\`[${attrs.KEY}="${key}"]\`)`;
+
+  let propsExpr: string;
+  const propsStr = element.getAttribute(attrs.PROPS);
+  if (propsStr === null || propsStr.length === 0) {
+    propsExpr = "null";
+  } else {
+    propsExpr = `JSON.parse(\`${propsStr}\`)`;
+  }
 
   if (asTemplate === false) {
-    script.textContent = anonFuncCall(queryExpr, sourceScript.textContent);
+    script.textContent = anonFuncCall(
+      queryExpr,
+      propsExpr,
+      sourceScript.textContent
+    );
   } else {
     if (!head.querySelector(`script[${attrs.FROM_TEMPLATE}="${asTemplate}"]`)) {
       const templScript = document.createElement("script");
@@ -43,7 +62,7 @@ export function handle(
       head.appendChild(templScript);
     }
 
-    script.textContent = templateFuncCall(queryExpr, asTemplate);
+    script.textContent = templateFuncCall(queryExpr, propsExpr, asTemplate);
   }
 
   head.appendChild(script);
