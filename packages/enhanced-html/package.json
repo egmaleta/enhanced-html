@@ -1,6 +1,6 @@
 {
   "name": "enhanced-html",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "license": "MIT",
   "main": "./dist/eh.js",
   "files": [
