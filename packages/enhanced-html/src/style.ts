@@ -1,4 +1,4 @@
-import attrs from "./attrs";
+import { FOR_ATTR, FROM_TEMPLATE_ATTR, KEY_ATTR, TEMPLATE_ATTR } from "./attrs";
 import { AMPERSAND, keyOf } from "./utils";
 
 export function handle(
@@ -14,19 +14,19 @@ export function handle(
 
   if (asTemplate === false) {
     const style = document.createElement("style");
-    style.setAttribute(attrs.FOR, key);
+    style.setAttribute(FOR_ATTR, key);
     style.textContent = sourceStyle.textContent.replace(
       AMPERSAND,
-      `[${attrs.KEY}="${key}"]`
+      `[${KEY_ATTR}="${key}"]`
     );
     head.appendChild(style);
   } else {
-    if (!head.querySelector(`style[${attrs.FROM_TEMPLATE}="${asTemplate}"]`)) {
+    if (!head.querySelector(`style[${FROM_TEMPLATE_ATTR}="${asTemplate}"]`)) {
       const style = document.createElement("style");
-      style.setAttribute(attrs.FROM_TEMPLATE, asTemplate);
+      style.setAttribute(FROM_TEMPLATE_ATTR, asTemplate);
       style.textContent = sourceStyle.textContent.replace(
         AMPERSAND,
-        `[${attrs.TEMPLATE}~="${asTemplate}"]`
+        `[${TEMPLATE_ATTR}~="${asTemplate}"]`
       );
       head.appendChild(style);
     }

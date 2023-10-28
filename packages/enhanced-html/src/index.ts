@@ -1,4 +1,4 @@
-import attrs from "./attrs";
+import { EH_ATTR, TEMPLATE_ATTR } from "./attrs";
 import { handle as handleScript } from "./script";
 import { handle as handleStyle } from "./style";
 import { handle as handleTemplate } from "./template";
@@ -11,8 +11,8 @@ const observer = new MutationObserver((mutations) => {
     for (const node of addedNodes) {
       if (!isHTMLElement(node)) continue;
 
-      if (node.hasAttribute(attrs.EH)) {
-        node.removeAttribute(attrs.EH);
+      if (node.hasAttribute(EH_ATTR)) {
+        node.removeAttribute(EH_ATTR);
 
         const isScript = isTaggedHTMLElement(node, "SCRIPT");
         if (isScript || isTaggedHTMLElement(node, "STYLE")) {
@@ -22,7 +22,7 @@ const observer = new MutationObserver((mutations) => {
         }
       }
 
-      if (node.hasAttribute(attrs.TEMPLATE)) {
+      if (node.hasAttribute(TEMPLATE_ATTR)) {
         handleTemplate(node);
       }
     }

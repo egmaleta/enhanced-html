@@ -1,10 +1,10 @@
-import attrs from "./attrs";
+import { EH_ATTR, TEMPLATE_ATTR } from "./attrs";
 import { handle as handleScript } from "./script";
 import { handle as handleStyle } from "./style";
 import { isHTMLElement, isTaggedHTMLElement, tokenizeAttr } from "./utils";
 
 export function handle(element: HTMLElement) {
-  const ids = element.getAttribute(attrs.TEMPLATE);
+  const ids = element.getAttribute(TEMPLATE_ATTR);
   if (ids === null) return;
 
   for (const id of new Set(tokenizeAttr(ids))) {
@@ -14,7 +14,7 @@ export function handle(element: HTMLElement) {
     if (!template) continue;
 
     for (const child of template.content.childNodes) {
-      if (isHTMLElement(child) && child.hasAttribute(attrs.EH)) {
+      if (isHTMLElement(child) && child.hasAttribute(EH_ATTR)) {
         const isScript = isTaggedHTMLElement(child, "SCRIPT");
         if (isScript || isTaggedHTMLElement(child, "STYLE")) {
           isScript

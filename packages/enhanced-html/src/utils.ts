@@ -1,4 +1,4 @@
-import attrs from "./attrs";
+import { KEY_ATTR } from "./attrs";
 
 export function isHTMLElement(node: Node): node is HTMLElement {
   return node.nodeType === Node.ELEMENT_NODE;
@@ -16,10 +16,10 @@ const newKey = (function () {
 })();
 
 export function keyOf(element: HTMLElement) {
-  let key = element.getAttribute(attrs.KEY);
+  let key = element.getAttribute(KEY_ATTR);
   if (key === null) {
     key = newKey().toString();
-    element.setAttribute(attrs.KEY, key);
+    element.setAttribute(KEY_ATTR, key);
   }
 
   return key;

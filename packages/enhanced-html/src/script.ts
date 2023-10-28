@@ -1,4 +1,4 @@
-import attrs from "./attrs";
+import { FOR_ATTR, FROM_TEMPLATE_ATTR, KEY_ATTR, PROPS_ATTR } from "./attrs";
 import { keyOf } from "./utils";
 
 const templateFuncDec = (scriptContent: string, templateName: string) =>
@@ -33,12 +33,12 @@ export function handle(
   const head = document.head;
 
   const script = document.createElement("script");
-  script.setAttribute(attrs.FOR, `${key}`);
+  script.setAttribute(FOR_ATTR, `${key}`);
 
-  const queryExpr = `document.querySelector(\`[${attrs.KEY}="${key}"]\`)`;
+  const queryExpr = `document.querySelector(\`[${KEY_ATTR}="${key}"]\`)`;
 
   let propsExpr: string;
-  const propsStr = element.getAttribute(attrs.PROPS);
+  const propsStr = element.getAttribute(PROPS_ATTR);
   if (propsStr === null || propsStr.length === 0) {
     propsExpr = "null";
   } else {
@@ -52,9 +52,9 @@ export function handle(
       sourceScript.textContent
     );
   } else {
-    if (!head.querySelector(`script[${attrs.FROM_TEMPLATE}="${asTemplate}"]`)) {
+    if (!head.querySelector(`script[${FROM_TEMPLATE_ATTR}="${asTemplate}"]`)) {
       const templScript = document.createElement("script");
-      templScript.setAttribute(attrs.FROM_TEMPLATE, asTemplate);
+      templScript.setAttribute(FROM_TEMPLATE_ATTR, asTemplate);
       templScript.textContent = templateFuncDec(
         sourceScript.textContent,
         asTemplate
