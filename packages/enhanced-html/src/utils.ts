@@ -25,8 +25,10 @@ export function keyOf(element: HTMLElement) {
   return key;
 }
 
-const extraSpaceRgx = /\s+/;
+export const AMPERSAND = /&/g;
+
+const EXTRA_SPACE = /\s+/;
 
 export function tokenizeAttr(attr: string) {
-  return attr.trim().split(extraSpaceRgx);
+  return attr.trim().split(EXTRA_SPACE);
 }

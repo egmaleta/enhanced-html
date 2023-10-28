@@ -1,7 +1,5 @@
 import attrs from "./attrs";
-import { keyOf } from "./utils";
-
-const replaceRgx = /&/g;
+import { AMPERSAND, keyOf } from "./utils";
 
 export function handle(
   element: HTMLElement,
@@ -18,7 +16,7 @@ export function handle(
     const style = document.createElement("style");
     style.setAttribute(attrs.FOR, key);
     style.textContent = sourceStyle.textContent.replace(
-      replaceRgx,
+      AMPERSAND,
       `[${attrs.KEY}="${key}"]`
     );
     head.appendChild(style);
@@ -27,7 +25,7 @@ export function handle(
       const style = document.createElement("style");
       style.setAttribute(attrs.FROM_TEMPLATE, asTemplate);
       style.textContent = sourceStyle.textContent.replace(
-        replaceRgx,
+        AMPERSAND,
         `[${attrs.TEMPLATE}~="${asTemplate}"]`
       );
       head.appendChild(style);
