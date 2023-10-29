@@ -29,6 +29,10 @@ export function keyOf(element: HTMLElement) {
   return key;
 }
 
+export function selectorByEhKey(key: string) {
+  return `[${KEY_ATTR}="${key}"]`;
+}
+
 export const AMPERSAND = /&/g;
 
 const EXTRA_SPACE = /\s+/;

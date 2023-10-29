@@ -1,5 +1,5 @@
-import { FOR_ATTR, FROM_TEMPLATE_ATTR, KEY_ATTR, TEMPLATE_ATTR } from "./attrs";
-import { AMPERSAND, keyOf } from "./utils";
+import { FOR_ATTR, FROM_TEMPLATE_ATTR, TEMPLATE_ATTR } from "./attrs";
+import { AMPERSAND, keyOf, selectorByEhKey } from "./utils";
 
 export function handle(
   element: HTMLElement,
@@ -17,7 +17,7 @@ export function handle(
     style.setAttribute(FOR_ATTR, key);
     style.textContent = sourceStyle.textContent.replace(
       AMPERSAND,
-      `[${KEY_ATTR}="${key}"]`
+      selectorByEhKey(key)
     );
     head.appendChild(style);
   } else {

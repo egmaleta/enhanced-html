@@ -1,5 +1,5 @@
-import { FOR_ATTR, FROM_TEMPLATE_ATTR, KEY_ATTR, PROPS_ATTR } from "./attrs";
-import { keyOf } from "./utils";
+import { FOR_ATTR, FROM_TEMPLATE_ATTR, PROPS_ATTR } from "./attrs";
+import { keyOf, selectorByEhKey } from "./utils";
 
 const templateFuncDec = (scriptContent: string, templateName: string) =>
   `function eh$func$${templateName}($this, $props) {
@@ -35,7 +35,7 @@ export function handle(
   const script = document.createElement("script");
   script.setAttribute(FOR_ATTR, `${key}`);
 
-  const queryExpr = `document.querySelector(\`[${KEY_ATTR}="${key}"]\`)`;
+  const queryExpr = `document.querySelector(\`${selectorByEhKey(key)}\`)`;
 
   let propsExpr: string;
   const propsStr = element.getAttribute(PROPS_ATTR);
