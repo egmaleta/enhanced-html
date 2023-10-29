@@ -10,14 +10,13 @@ export default function (element: HTMLElement) {
   const tokens = !isEmptyAttr(req) ? tokenizeAttr(req) : [];
   if (tokens.length === 0) return;
 
-  const [method, path] =
+  const [method, pathname] =
     tokens.length === 1 ? [config.defaultMethod, tokens[0]] : tokens;
 
   if (!VALID_METHODS.includes(method)) return;
 
-  const url = path.startsWith("/")
-    ? new URL(path, window.location.origin)
-    : new URL(`${window.location.origin}${window.location.pathname}${path}`);
-
-  return [method as HttpMethod, url] as const;
+  return [
+    method as HttpMethod,
+    new URL(pathname, window.location.origin),
+  ] as const;
 }
