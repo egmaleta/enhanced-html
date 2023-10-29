@@ -11,7 +11,7 @@ const VALID_PLACES = [
   "outer",
 ];
 
-export function handle(element: HTMLElement) {
+export default function (element: HTMLElement) {
   const resp = element.getAttribute(RESPONSE_ATTR);
   const tokens = !isEmptyAttr(resp) ? tokenizeAttr(resp) : [];
 

@@ -4,7 +4,7 @@ import { tokenizeAttr } from "../utils";
 
 const VALID_METHODS = ["get", "post", "put", "patch", "delete"];
 
-export function handle(element: HTMLElement) {
+export default function (element: HTMLElement) {
   const req = element.getAttribute(REQUEST_ATTR);
 
   const tokens = !isEmptyAttr(req) ? tokenizeAttr(req) : [];
