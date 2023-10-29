@@ -1,4 +1,4 @@
-import { EH_ATTR, TEMPLATE_ATTR } from "./attrs";
+import { TEMPLATE_ATTR } from "./attrs";
 import { handle as handleScript } from "./script";
 import { handle as handleStyle } from "./style";
 import { isHTMLElement, isTaggedHTMLElement, tokenizeAttr } from "./utils";
@@ -14,7 +14,7 @@ export function handle(element: HTMLElement) {
     if (!template) continue;
 
     for (const child of template.content.childNodes) {
-      if (isHTMLElement(child) && child.hasAttribute(EH_ATTR)) {
+      if (isHTMLElement(child)) {
         const isScript = isTaggedHTMLElement(child, "SCRIPT");
         if (isScript || isTaggedHTMLElement(child, "STYLE")) {
           isScript
