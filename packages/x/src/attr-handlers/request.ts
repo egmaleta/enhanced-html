@@ -16,10 +16,8 @@ export default function (element: HTMLElement) {
   if (!VALID_METHODS.includes(method)) return;
 
   const url = path.startsWith("/")
-    ? new URL(path, globalThis.location.origin)
-    : new URL(
-        `${globalThis.location.origin}${globalThis.location.pathname}${path}`
-      );
+    ? new URL(path, window.location.origin)
+    : new URL(`${window.location.origin}${window.location.pathname}${path}`);
 
   return [method as HttpMethod, url] as const;
 }

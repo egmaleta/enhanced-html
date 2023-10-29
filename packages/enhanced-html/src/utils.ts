@@ -12,11 +12,11 @@ export function isTaggedHTMLElement<
 
 const newKey = (function () {
   const varName = "eh$keycount";
-  if (!(varName in globalThis)) {
-    Object.defineProperty(globalThis, varName, { value: 0, writable: true });
+  if (!(varName in window)) {
+    Object.defineProperty(window, varName, { value: 0, writable: true });
   }
   // @ts-ignore
-  return () => globalThis[varName]++;
+  return () => window[varName]++;
 })();
 
 export function keyOf(element: HTMLElement) {
