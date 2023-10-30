@@ -1,6 +1,6 @@
-import { KEY_ATTR, RESPONSE_ATTR, isEmptyAttr } from "../attrs";
+import { KEY_ATTR, RESPONSE_ATTR } from "../attrs";
 import config, { Place } from "../config";
-import { AMPERSAND, keyOf, tokenizeAttr } from "../utils";
+import { AMPERSAND, isEmptyAttr, keyOf, tokenizeAttr } from "../utils";
 
 const VALID_PLACES = [
   "afterbegin",

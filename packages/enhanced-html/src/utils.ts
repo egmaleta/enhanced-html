@@ -10,6 +10,10 @@ export function isTaggedHTMLElement<
   return node.nodeName === tag;
 }
 
+export function isEmptyAttr(attr: string | null): attr is null | "" {
+  return attr === null || attr.length === 0;
+}
+
 const newKey = (function () {
   const varName = "eh$keycount";
   if (!(varName in window)) {
@@ -21,7 +25,7 @@ const newKey = (function () {
 
 export function keyOf(element: HTMLElement) {
   let key = element.getAttribute(KEY_ATTR);
-  if (key === null) {
+  if (isEmptyAttr(key)) {
     key = newKey().toString();
     element.setAttribute(KEY_ATTR, key);
   }
