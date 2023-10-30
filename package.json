@@ -1,7 +1,6 @@
 {
-  "name": "enhanced-html-monorepo",
-  "version": "0.0.0",
-  "private": true,
+  "name": "enhanced-html",
+  "version": "0.5.0",
   "author": {
     "name": "Eduardo García Maleta",
     "email": "egmaleta@proton.me",
@@ -14,6 +13,19 @@
   "homepage": "https://github.com/egmaleta/enhanced-html",
   "bugs": {
     "url": "https://github.com/egmaleta/enhanced-html/issues"
+  },
+  "license": "MIT",
+  "main": "./dist/eh.js",
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc && vite build",
+    "test": "tsc && vite build && vitest run"
   },
   "devDependencies": {
     "@types/node": "20.8.6",
