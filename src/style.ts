@@ -1,6 +1,7 @@
-import { FOR_ATTR, FROM_TEMPLATE_ATTR, TEMPLATE_ATTR } from "./attr/names";
+import { keyOf } from "./attr/key";
+import { FOR_ATTR, FROM_TEMPLATE_ATTR } from "./attr/names";
 import { selectorByKey } from "./attr/utils";
-import { SELF_SELECTOR, keyOf } from "./element";
+import { SELF_SELECTOR, selectorByTemplateId } from "./selector";
 
 export function handle(
   element: HTMLElement,
@@ -27,7 +28,7 @@ export function handle(
       style.setAttribute(FROM_TEMPLATE_ATTR, asTemplate);
       style.textContent = sourceStyle.textContent.replace(
         SELF_SELECTOR,
-        `[${TEMPLATE_ATTR}~="${asTemplate}"]`
+        selectorByTemplateId(asTemplate)
       );
       head.appendChild(style);
     }

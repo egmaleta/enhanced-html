@@ -1,7 +1,8 @@
 import { RESPONSE_ATTR } from "./names";
-import { isEmptyAttr, selectorByKey, tokenizeAttr } from "./utils";
+import { isEmptyAttr, tokenizeAttr } from "./utils";
+import { keyOf } from "./key";
 import config, { type Place } from "../config";
-import { SELF_SELECTOR, keyOf } from "../element";
+import { SELF_SELECTOR, selectorByKey } from "../selector";
 
 const VALID_PLACES = [
   "afterbegin",

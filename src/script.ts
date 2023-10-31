@@ -1,6 +1,6 @@
+import { keyOf } from "./attr/key";
 import { FOR_ATTR, FROM_TEMPLATE_ATTR, PROPS_ATTR } from "./attr/names";
 import { selectorByKey } from "./attr/utils";
-import { keyOf } from "./element";
 
 const templateFuncDec = (scriptContent: string, templateName: string) =>
   `function eh$func$${templateName}($this, $props) {
