@@ -1,4 +1,4 @@
-import { isTaggedHTMLElement } from "./utils";
+import { isTaggedHTMLElement } from "./element";
 
 export type Place = InsertPosition | "inner" | "outer";
 export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";

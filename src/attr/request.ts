@@ -1,6 +1,6 @@
-import config, { HttpMethod } from "../config";
-import { REQUEST_ATTR } from "../attrs";
-import { isEmptyAttr, tokenizeAttr } from "../utils";
+import { REQUEST_ATTR } from "./names";
+import { isEmptyAttr, tokenizeAttr } from "./utils";
+import config, { type HttpMethod } from "../config";
 
 const VALID_METHODS = ["get", "post", "put", "patch", "delete"];
 

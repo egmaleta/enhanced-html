@@ -1,6 +1,6 @@
-import { ON_ATTR } from "../attrs";
+import { ON_ATTR } from "./names";
+import { isEmptyAttr } from "./utils";
 import config from "../config";
-import { isEmptyAttr } from "../utils";
 
 export default function (element: HTMLElement) {
   let trigger = element.getAttribute(ON_ATTR);

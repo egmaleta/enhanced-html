@@ -1,5 +1,6 @@
-import { FOR_ATTR, FROM_TEMPLATE_ATTR, TEMPLATE_ATTR } from "./attrs";
-import { AMPERSAND, keyOf, selectorByEhKey } from "./utils";
+import { FOR_ATTR, FROM_TEMPLATE_ATTR, TEMPLATE_ATTR } from "./attr/names";
+import { selectorByKey } from "./attr/utils";
+import { SELF_SELECTOR, keyOf } from "./element";
 
 export function handle(
   element: HTMLElement,
@@ -16,8 +17,8 @@ export function handle(
     const style = document.createElement("style");
     style.setAttribute(FOR_ATTR, key);
     style.textContent = sourceStyle.textContent.replace(
-      AMPERSAND,
-      selectorByEhKey(key)
+      SELF_SELECTOR,
+      selectorByKey(key)
     );
     head.appendChild(style);
   } else {
@@ -25,7 +26,7 @@ export function handle(
       const style = document.createElement("style");
       style.setAttribute(FROM_TEMPLATE_ATTR, asTemplate);
       style.textContent = sourceStyle.textContent.replace(
-        AMPERSAND,
+        SELF_SELECTOR,
         `[${TEMPLATE_ATTR}~="${asTemplate}"]`
       );
       head.appendChild(style);

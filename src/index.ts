@@ -1,9 +1,9 @@
-import { EH_ATTR, REQUEST_ATTR, TEMPLATE_ATTR } from "./attrs";
+import { EH_ATTR, REQUEST_ATTR, TEMPLATE_ATTR } from "./attr/names";
 import { handle as handleWithReqAttr } from "./request";
 import { handle as handleScript } from "./script";
 import { handle as handleStyle } from "./style";
 import { handle as handleTemplate } from "./template";
-import { isHTMLElement, isTaggedHTMLElement } from "./utils";
+import { isHTMLElement, isTaggedHTMLElement } from "./element";
 
 const observer = new MutationObserver((mutations) => {
   for (const { target, addedNodes } of mutations) {

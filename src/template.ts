@@ -1,7 +1,8 @@
-import { TEMPLATE_ATTR } from "./attrs";
+import { TEMPLATE_ATTR } from "./attr/names";
 import { handle as handleScript } from "./script";
 import { handle as handleStyle } from "./style";
-import { isHTMLElement, isTaggedHTMLElement, tokenizeAttr } from "./utils";
+import { isHTMLElement, isTaggedHTMLElement } from "./element";
+import { tokenizeAttr } from "./attr/utils";
 
 export function handle(element: HTMLElement) {
   const ids = element.getAttribute(TEMPLATE_ATTR);

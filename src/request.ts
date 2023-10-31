@@ -1,9 +1,7 @@
-import {
-  handleOnAttr,
-  handleRequestAttr,
-  handleResponseAttr,
-} from "./attr-handlers";
-import { isTaggedHTMLElement } from "./utils";
+import { default as handleOnAttr } from "./attr/on";
+import { default as handleResponseAttr } from "./attr/response";
+import { default as handleRequestAttr } from "./attr/request";
+import { isTaggedHTMLElement } from "./element";
 import { makeRequest } from "./xhr";
 
 export function handle(element: HTMLElement) {
