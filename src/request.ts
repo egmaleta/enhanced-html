@@ -13,7 +13,7 @@ export function handle(element: HTMLElement) {
   const eventInfo = handleEventAttr(element);
   const [target, place] = handleResponseAttr(element);
 
-  eventInfo.eventTarget.addEventListener(
+  eventInfo.target.addEventListener(
     eventInfo.event,
     () => {
       let fd: FormData | null = null;

@@ -3,7 +3,7 @@ import { tokenizeAttr } from "./utils";
 import config from "../config";
 
 type EventInfo = {
-  eventTarget: Element;
+  target: Element;
   event: string;
 
   once?: boolean;
@@ -16,7 +16,7 @@ export default function (element: HTMLElement) {
   const tokens = tokenizeAttr(element.getAttribute(EVENT_ATTR));
 
   const info: EventInfo = {
-    eventTarget: element,
+    target: element,
     event: config.defaultEvent(element),
   };
 
@@ -31,7 +31,7 @@ export default function (element: HTMLElement) {
     if (match !== null) {
       const eventTarget = document.querySelector(match[1]);
       if (eventTarget) {
-        info.eventTarget = eventTarget;
+        info.target = eventTarget;
         info.event = config.defaultEvent(eventTarget);
       }
       continue;
