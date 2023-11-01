@@ -5,11 +5,10 @@ import { isTaggedHTMLElement } from "./element";
 import { makeRequest } from "./xhr";
 
 export function handle(element: HTMLElement) {
-  const tuple = handleRequestAttr(element);
-  if (!tuple) return;
+  const requestInfo = handleRequestAttr(element);
+  if (!requestInfo) return;
 
-  const [method, url] = tuple;
-
+  const { method, url } = requestInfo;
   const { target: eventTarget, event, once } = handleEventAttr(element);
   const { target, place } = handleResponseAttr(element);
 

@@ -2,6 +2,11 @@ import { REQUEST_ATTR } from "./names";
 import { tokenizeAttr } from "./utils";
 import config, { type HttpMethod } from "../config";
 
+type RequestInfo = {
+  method: HttpMethod;
+  url: URL;
+};
+
 const VALID_METHODS = ["get", "post", "put", "patch", "delete"];
 
 export default function (element: HTMLElement) {
@@ -13,8 +18,8 @@ export default function (element: HTMLElement) {
 
   if (!VALID_METHODS.includes(method)) return;
 
-  return [
-    method as HttpMethod,
-    new URL(pathname, window.location.origin),
-  ] as const;
+  return {
+    method,
+    url: new URL(pathname, window.location.origin),
+  } as RequestInfo;
 }
