@@ -3,14 +3,14 @@ export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 
 type Config = {
   defaultMethod: HttpMethod;
-  defaultTrigger: (element: HTMLElement) => keyof HTMLElementEventMap;
+  defaultEvent: (element: Element) => keyof HTMLElementEventMap;
   defaultTarget: string;
   defaultPlace: Place;
 };
 
 export default {
   defaultMethod: "get",
-  defaultTrigger(element) {
+  defaultEvent(element) {
     switch (element.tagName) {
       case "INPUT":
       case "TEXTAREA":
