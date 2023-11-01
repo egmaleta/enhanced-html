@@ -1,8 +1,6 @@
 import { EVENT_ATTR } from "./names";
-import { keyOf } from "./key";
 import { isEmptyAttr, tokenizeAttr } from "./utils";
 import config from "../config";
-import { SELF_SELECTOR, selectorByKey } from "../selector";
 
 type EventInfo = {
   eventTarget: Element;
@@ -32,11 +30,7 @@ export default function (element: HTMLElement) {
 
     const match = FROM_MOD.exec(token);
     if (match !== null) {
-      const query = match[1].replace(
-        SELF_SELECTOR,
-        selectorByKey(keyOf(element))
-      );
-      const eventTarget = document.querySelector(query);
+      const eventTarget = document.querySelector(match[1]);
       if (eventTarget) {
         info.eventTarget = eventTarget;
         info.event = config.defaultEvent(eventTarget);
