@@ -10,11 +10,11 @@ export function handle(element: HTMLElement) {
 
   const [method, url] = tuple;
 
-  const eventInfo = handleEventAttr(element);
-  const [target, place] = handleResponseAttr(element);
+  const { target: eventTarget, event, once } = handleEventAttr(element);
+  const { target, place } = handleResponseAttr(element);
 
-  eventInfo.target.addEventListener(
-    eventInfo.event,
+  eventTarget.addEventListener(
+    event,
     () => {
       let fd: FormData | null = null;
 
@@ -39,9 +39,6 @@ export function handle(element: HTMLElement) {
         }
       }
 
-      const targetElement = document.querySelector(target);
-      if (!targetElement) return;
-
       makeRequest(method, url, fd, function () {
         if (this.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
           const contentType = this.getResponseHeader("Content-Type");
@@ -59,15 +56,15 @@ export function handle(element: HTMLElement) {
             switch (place) {
               case "inner":
               case "outer":
-                targetElement[`${place}HTML`] = html;
+                target[`${place}HTML`] = html;
                 break;
               default:
-                targetElement.insertAdjacentHTML(place, html);
+                target.insertAdjacentHTML(place, html);
             }
           }
         }
       });
     },
-    { once: eventInfo.once }
+    { once }
   );
 }

@@ -1,8 +1,11 @@
 import { RESPONSE_ATTR } from "./names";
 import { tokenizeAttr } from "./utils";
-import { keyOf } from "./key";
 import config, { type Place } from "../config";
-import { SELF_SELECTOR, selectorByKey } from "../selector";
+
+type ResponseInfo = {
+  target: Element;
+  place: Place;
+};
 
 const VALID_PLACES = [
   "afterbegin",
@@ -16,13 +19,26 @@ const VALID_PLACES = [
 export default function (element: HTMLElement) {
   const tokens = tokenizeAttr(element.getAttribute(RESPONSE_ATTR));
 
-  let target = tokens.length > 0 ? tokens[0] : config.defaultTarget;
-  target = target.replace(SELF_SELECTOR, selectorByKey(keyOf(element)));
+  const info: ResponseInfo = {
+    target: element,
+    place: config.defaultPlace,
+  };
 
-  const place =
-    tokens.length > 1 && VALID_PLACES.includes(tokens[1])
-      ? (tokens[1] as Place)
-      : config.defaultPlace;
+  const rest = [];
+  for (const token of tokens) {
+    if (VALID_PLACES.includes(token)) {
+      info.place = token as Place;
+    } else {
+      rest.push(token);
+    }
+  }
 
-  return [target, place] as const;
+  if (rest.length > 0) {
+    const target = document.querySelector(rest[0]);
+    if (target) {
+      info.target = target;
+    }
+  }
+
+  return info;
 }
