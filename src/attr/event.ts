@@ -7,9 +7,11 @@ type EventInfo = {
   event: string;
 
   once?: boolean;
+  changed?: boolean;
 };
 
 const ONCE_MOD = "once";
+const CHANGED_MOD = "changed";
 const FROM_MOD = /^from:([^\s]+)$/;
 
 export default function (element: HTMLElement) {
@@ -24,6 +26,11 @@ export default function (element: HTMLElement) {
   for (const token of tokens) {
     if (token === ONCE_MOD) {
       info.once = true;
+      continue;
+    }
+
+    if (token === CHANGED_MOD) {
+      info.changed = true;
       continue;
     }
 

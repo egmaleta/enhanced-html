@@ -4,17 +4,36 @@ import { default as handleRequestAttr } from "./attr/request";
 import { isTaggedHTMLElement } from "./element";
 import { makeRequest } from "./xhr";
 
+function getValue(element: any) {
+  return element.value;
+}
+
 export function handle(element: HTMLElement) {
   const requestInfo = handleRequestAttr(element);
   if (!requestInfo) return;
 
   const { method, url } = requestInfo;
-  const { target: eventTarget, event, once } = handleEventAttr(element);
+  const {
+    target: eventTarget,
+    event,
+    once,
+    changed,
+  } = handleEventAttr(element);
   const { target, place } = handleResponseAttr(element);
+
+  let eventTargetLastValue = changed && getValue(eventTarget);
 
   eventTarget.addEventListener(
     event,
     () => {
+      if (changed) {
+        const value = getValue(eventTarget);
+        if (value === eventTargetLastValue) {
+          return;
+        }
+        eventTargetLastValue = value;
+      }
+
       let fd: FormData | null = null;
 
       if (isTaggedHTMLElement(element, "FORM")) {
