@@ -1,5 +1,5 @@
 import { RESPONSE_ATTR } from "./names";
-import { isEmptyAttr, tokenizeAttr } from "./utils";
+import { tokenizeAttr } from "./utils";
 import { keyOf } from "./key";
 import config, { type Place } from "../config";
 import { SELF_SELECTOR, selectorByKey } from "../selector";
@@ -14,8 +14,7 @@ const VALID_PLACES = [
 ];
 
 export default function (element: HTMLElement) {
-  const resp = element.getAttribute(RESPONSE_ATTR);
-  const tokens = !isEmptyAttr(resp) ? tokenizeAttr(resp) : [];
+  const tokens = tokenizeAttr(element.getAttribute(RESPONSE_ATTR));
 
   let target = tokens.length > 0 ? tokens[0] : config.defaultTarget;
   target = target.replace(SELF_SELECTOR, selectorByKey(keyOf(element)));

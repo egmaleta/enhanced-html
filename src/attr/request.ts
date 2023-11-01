@@ -1,13 +1,11 @@
 import { REQUEST_ATTR } from "./names";
-import { isEmptyAttr, tokenizeAttr } from "./utils";
+import { tokenizeAttr } from "./utils";
 import config, { type HttpMethod } from "../config";
 
 const VALID_METHODS = ["get", "post", "put", "patch", "delete"];
 
 export default function (element: HTMLElement) {
-  const req = element.getAttribute(REQUEST_ATTR);
-
-  const tokens = !isEmptyAttr(req) ? tokenizeAttr(req) : [];
+  const tokens = tokenizeAttr(element.getAttribute(REQUEST_ATTR));
   if (tokens.length === 0) return;
 
   const [method, pathname] =

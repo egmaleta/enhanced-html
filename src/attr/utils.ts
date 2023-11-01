@@ -4,6 +4,6 @@ export function isEmptyAttr(attr: string | null): attr is null | "" {
 
 const EXTRA_SPACE = /\s+/;
 
-export function tokenizeAttr(attr: string) {
-  return attr.trim().split(EXTRA_SPACE);
+export function tokenizeAttr(attr: string | null) {
+  return !isEmptyAttr(attr) ? attr.trim().split(EXTRA_SPACE) : [];
 }

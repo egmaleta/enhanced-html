@@ -1,5 +1,5 @@
 import { EVENT_ATTR } from "./names";
-import { isEmptyAttr, tokenizeAttr } from "./utils";
+import { tokenizeAttr } from "./utils";
 import config from "../config";
 
 type EventInfo = {
@@ -13,8 +13,7 @@ const ONCE_MOD = "once";
 const FROM_MOD = /^from:([^\s]+)$/;
 
 export default function (element: HTMLElement) {
-  const attr = element.getAttribute(EVENT_ATTR);
-  const tokens = !isEmptyAttr(attr) ? tokenizeAttr(attr) : [];
+  const tokens = tokenizeAttr(element.getAttribute(EVENT_ATTR));
 
   const info: EventInfo = {
     eventTarget: element,
