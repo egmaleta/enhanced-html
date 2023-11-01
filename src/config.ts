@@ -4,7 +4,6 @@ export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 type Config = {
   defaultMethod: HttpMethod;
   defaultEvent: (element: Element) => keyof HTMLElementEventMap;
-  defaultTarget: string;
   defaultPlace: Place;
 };
 
@@ -22,6 +21,5 @@ export default {
         return "click";
     }
   },
-  defaultTarget: "&",
   defaultPlace: "inner",
 } satisfies Config;

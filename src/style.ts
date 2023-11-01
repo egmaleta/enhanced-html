@@ -1,7 +1,12 @@
+import {
+  FOR_ATTR,
+  FROM_TEMPLATE_ATTR,
+  KEY_ATTR,
+  TEMPLATE_ATTR,
+} from "./attr/names";
 import { keyOf } from "./attr/key";
-import { FOR_ATTR, FROM_TEMPLATE_ATTR } from "./attr/names";
-import { selectorByKey } from "./selector";
-import { SELF_SELECTOR, selectorByTemplateId } from "./selector";
+
+const SELF_SELECTOR = /&/g;
 
 export function handle(
   element: HTMLElement,
@@ -19,7 +24,7 @@ export function handle(
     style.setAttribute(FOR_ATTR, key);
     style.textContent = sourceStyle.textContent.replace(
       SELF_SELECTOR,
-      selectorByKey(key)
+      `[${KEY_ATTR}="${key}"]`
     );
     head.appendChild(style);
   } else {
@@ -28,7 +33,7 @@ export function handle(
       style.setAttribute(FROM_TEMPLATE_ATTR, asTemplate);
       style.textContent = sourceStyle.textContent.replace(
         SELF_SELECTOR,
-        selectorByTemplateId(asTemplate)
+        `[${TEMPLATE_ATTR}~="${asTemplate}"]`
       );
       head.appendChild(style);
     }
