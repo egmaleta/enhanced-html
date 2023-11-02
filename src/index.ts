@@ -1,4 +1,4 @@
-import { EH_ATTR, REQUEST_ATTR, TEMPLATE_ATTR } from "./attr";
+import { EH_ATTR, REQUEST_ATTR, TEMPLATE_ATTR, handlePropsAttr } from "./attr";
 import { handle as handleWithReqAttr } from "./request";
 import { handle as handleScript } from "./script";
 import { handle as handleStyle } from "./style";
@@ -22,6 +22,8 @@ const observer = new MutationObserver((mutations) => {
           continue;
         }
       }
+
+      handlePropsAttr(node);
 
       if (node.hasAttribute(TEMPLATE_ATTR)) {
         handleTemplate(node);

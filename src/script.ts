@@ -1,25 +1,16 @@
-import { FOR_ATTR, FROM_TEMPLATE_ATTR, KEY_ATTR, PROPS_ATTR } from "./attr";
-import { keyOf } from "./element";
+import { FROM_TEMPLATE_ATTR } from "./attr";
+import { store, storeVarName } from "./element";
 
 const templateFuncDec = (scriptContent: string, templateName: string) =>
   `function eh$func$${templateName}($this, $props) {
   ${scriptContent}
 }`;
 
-const templateFuncCall = (
-  queryExpr: string,
-  propsExpr: string,
-  templateName: string
-) => `eh$func$${templateName}(${queryExpr}, ${propsExpr});`;
-
-const anonFuncCall = (
-  queryExpr: string,
-  propsExpr: string,
-  scriptContent: string
-) =>
-  `(function ($this, $props) {
+const funcCall = (key: number, scriptContent: string) => `(function () {
+  const $this = ${storeVarName}.get(${key});
+  const $props = ${storeVarName}.dataOf($this).props;
   ${scriptContent}
-})(${queryExpr}, ${propsExpr});`;
+})()`;
 
 export function handle(
   element: HTMLElement,
@@ -28,29 +19,12 @@ export function handle(
 ) {
   if (sourceScript.textContent === null) return;
 
-  const key = keyOf(element);
+  const key = store.register(element).key;
 
   const head = document.head;
-
   const script = document.createElement("script");
-  script.setAttribute(FOR_ATTR, `${key}`);
-
-  const queryExpr = `document.querySelector(\`[${KEY_ATTR}="${key}"]\`)`;
-
-  let propsExpr: string;
-  const propsStr = element.getAttribute(PROPS_ATTR);
-  if (propsStr === null || propsStr.length === 0) {
-    propsExpr = "null";
-  } else {
-    propsExpr = `JSON.parse(\`${propsStr}\`)`;
-  }
-
   if (asTemplate === false) {
-    script.textContent = anonFuncCall(
-      queryExpr,
-      propsExpr,
-      sourceScript.textContent
-    );
+    script.textContent = funcCall(key, sourceScript.textContent);
   } else {
     if (!head.querySelector(`script[${FROM_TEMPLATE_ATTR}="${asTemplate}"]`)) {
       const templScript = document.createElement("script");
@@ -62,8 +36,7 @@ export function handle(
       head.appendChild(templScript);
     }
 
-    script.textContent = templateFuncCall(queryExpr, propsExpr, asTemplate);
+    script.textContent = funcCall(key, `eh$func$${asTemplate}($this, $props);`);
   }
-
   head.appendChild(script);
 }

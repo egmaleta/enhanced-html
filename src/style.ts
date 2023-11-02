@@ -1,5 +1,5 @@
-import { FOR_ATTR, FROM_TEMPLATE_ATTR, KEY_ATTR, TEMPLATE_ATTR } from "./attr";
-import { keyOf } from "./element";
+import { FROM_TEMPLATE_ATTR, KEY_ATTR, TEMPLATE_ATTR } from "./attr";
+import { store } from "./element";
 
 const SELF_SELECTOR = /&/g;
 
@@ -10,13 +10,14 @@ export function handle(
 ) {
   if (sourceStyle.textContent === null) return;
 
-  const key = keyOf(element);
+  const key = store.register(element).key.toString();
 
   const head = document.head;
 
   if (asTemplate === false) {
+    element.setAttribute(KEY_ATTR, key);
+
     const style = document.createElement("style");
-    style.setAttribute(FOR_ATTR, key);
     style.textContent = sourceStyle.textContent.replace(
       SELF_SELECTOR,
       `[${KEY_ATTR}="${key}"]`

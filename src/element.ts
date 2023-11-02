@@ -1,5 +1,7 @@
-import { KEY_ATTR } from "./attr";
-import { isEmptyAttr } from "./attr/utils";
+type ElementData = {
+  key: number;
+  props?: object | number | string | boolean | null;
+};
 
 export function isHTMLElement(node: Node): node is HTMLElement {
   return node.nodeType === Node.ELEMENT_NODE;
@@ -12,20 +14,36 @@ export function isTaggedHTMLElement<
 }
 
 const newKey = (function () {
-  const varName = "eh$keycount";
-  if (!(varName in window)) {
-    Object.defineProperty(window, varName, { value: 0, writable: true });
-  }
-  // @ts-ignore
-  return () => window[varName]++;
+  let count = 0;
+  return () => count++;
 })();
 
-export function keyOf(element: HTMLElement) {
-  let key = element.getAttribute(KEY_ATTR);
-  if (isEmptyAttr(key)) {
-    key = newKey().toString();
-    element.setAttribute(KEY_ATTR, key);
-  }
+export const store = {
+  _elementToData: new Map<Element, ElementData>(),
+  _keyToElement: new Map<number, Element>(),
 
-  return key;
+  get(key: number) {
+    return this._keyToElement.get(key);
+  },
+
+  dataOf(element: Element) {
+    return this._elementToData.get(element);
+  },
+
+  register(element: Element): ElementData {
+    if (!this._elementToData.has(element)) {
+      const data = { key: newKey() };
+      this._elementToData.set(element, data);
+      this._keyToElement.set(data.key, element);
+
+      return data;
+    }
+
+    return this.dataOf(element)!;
+  },
+};
+
+export const storeVarName = "eh$elements";
+if (!(storeVarName in window)) {
+  Object.defineProperty(window, storeVarName, { value: store });
 }

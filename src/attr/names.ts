@@ -1,6 +1,5 @@
 export type EhAttr = `eh-${string}` | "eh";
 
-export const FOR_ATTR = "eh-for";
 export const FROM_TEMPLATE_ATTR = "eh-from-templ";
 export const KEY_ATTR = "eh-key";
 
