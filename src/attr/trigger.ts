@@ -10,12 +10,35 @@ type EventInfo = {
   changed?: boolean;
 };
 
+const TIME_RGX = /^([1-9]\d*)(m?s)$/;
+
+function parseTime(text: string) {
+  const match = TIME_RGX.exec(text);
+  if (match) {
+    const asMilliseconds = match[2] === "ms";
+    return +match[1] * (asMilliseconds ? 1 : 1000);
+  }
+}
+
 const ONCE_MOD = "once";
 const CHANGED_MOD = "changed";
-const FROM_MOD = /^from:([^\s]+)$/;
+const FROM_MOD_RGX = /^from:([^\s]+)$/;
 
 export default function (element: HTMLElement) {
   const tokens = tokenizeAttr(element.getAttribute(TRIGGER_ATTR));
+
+  if (tokens.length > 1 && tokens[0] === "every") {
+    // POLL MODE
+
+    const time = parseTime(tokens[1]);
+    if (typeof time === "number") {
+      return time;
+    }
+
+    return;
+  }
+
+  // EVENT MODE
 
   const info: EventInfo = {
     target: element,
@@ -34,7 +57,7 @@ export default function (element: HTMLElement) {
       continue;
     }
 
-    const match = FROM_MOD.exec(token);
+    const match = FROM_MOD_RGX.exec(token);
     if (match !== null) {
       const eventTarget = document.querySelector(match[1]);
       if (eventTarget) {
