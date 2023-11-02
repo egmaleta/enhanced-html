@@ -10,4 +10,4 @@ export const TEMPLATE_ATTR = "eh-templ";
 export const PROPS_ATTR = "eh-props";
 export const REQUEST_ATTR = "eh-req";
 export const RESPONSE_ATTR = "eh-resp";
-export const EVENT_ATTR = "eh-event";
+export const TRIGGER_ATTR = "eh-trigger";

@@ -1,4 +1,4 @@
-import { EVENT_ATTR } from "./names";
+import { TRIGGER_ATTR } from "./names";
 import { tokenizeAttr } from "./utils";
 import config from "../config";
 
@@ -15,7 +15,7 @@ const CHANGED_MOD = "changed";
 const FROM_MOD = /^from:([^\s]+)$/;
 
 export default function (element: HTMLElement) {
-  const tokens = tokenizeAttr(element.getAttribute(EVENT_ATTR));
+  const tokens = tokenizeAttr(element.getAttribute(TRIGGER_ATTR));
 
   const info: EventInfo = {
     target: element,

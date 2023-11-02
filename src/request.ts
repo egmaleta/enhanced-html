@@ -1,4 +1,4 @@
-import { default as handleEventAttr } from "./attr/event";
+import { default as handleTriggerAttr } from "./attr/trigger";
 import { default as handleResponseAttr } from "./attr/response";
 import { default as handleRequestAttr } from "./attr/request";
 import { isTaggedHTMLElement } from "./element";
@@ -18,7 +18,7 @@ export function handle(element: HTMLElement) {
     event,
     once,
     changed,
-  } = handleEventAttr(element);
+  } = handleTriggerAttr(element);
   const { target, place } = handleResponseAttr(element);
 
   let eventTargetLastValue = changed && getValue(eventTarget);
