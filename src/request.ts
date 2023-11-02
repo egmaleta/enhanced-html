@@ -1,6 +1,8 @@
-import { default as handleTriggerAttr } from "./attr/trigger";
-import { default as handleResponseAttr } from "./attr/response";
-import { default as handleRequestAttr } from "./attr/request";
+import {
+  handleRequestAttr,
+  handleResponseAttr,
+  handleTriggerAttr,
+} from "./attr";
 import { isTaggedHTMLElement } from "./element";
 import { makeRequest } from "./xhr";
 

@@ -1,10 +1,5 @@
-import {
-  FOR_ATTR,
-  FROM_TEMPLATE_ATTR,
-  KEY_ATTR,
-  TEMPLATE_ATTR,
-} from "./attr/names";
-import { keyOf } from "./attr/key";
+import { FOR_ATTR, FROM_TEMPLATE_ATTR, KEY_ATTR, TEMPLATE_ATTR } from "./attr";
+import { keyOf } from "./element";
 
 const SELF_SELECTOR = /&/g;
 

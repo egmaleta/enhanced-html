@@ -1,4 +1,4 @@
-import { handle as handleTemplateAttr } from "./attr/template";
+import { handleTemplateAttr } from "./attr";
 import { handle as handleScript } from "./script";
 import { handle as handleStyle } from "./style";
 import { isHTMLElement, isTaggedHTMLElement } from "./element";

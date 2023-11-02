@@ -1,4 +1,4 @@
-import { EH_ATTR, REQUEST_ATTR, TEMPLATE_ATTR } from "./attr/names";
+import { EH_ATTR, REQUEST_ATTR, TEMPLATE_ATTR } from "./attr";
 import { handle as handleWithReqAttr } from "./request";
 import { handle as handleScript } from "./script";
 import { handle as handleStyle } from "./style";
