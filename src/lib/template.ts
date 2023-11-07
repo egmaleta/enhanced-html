@@ -1,16 +1,17 @@
-import { handleTemplateAttr } from "./attr";
-import { handle as handleScript } from "./script";
-import { handle as handleStyle } from "./style";
+import { handleScript, handleStyle } from "./eh";
 import { isHTMLElement, isTaggedHTMLElement } from "./element";
+import { TEMPLATE_ATTR, tokenize } from "./attr";
 
-export function handle(element: HTMLElement) {
-  const idList = handleTemplateAttr(element);
+export function handleTemplateAttr(element: HTMLElement) {
+  const attr = element.getAttribute(TEMPLATE_ATTR);
+  if (attr === null) return;
 
-  for (const id of idList) {
+  const idSet = new Set(tokenize(attr));
+  for (const id of idSet) {
     const template = document.querySelector<HTMLTemplateElement>(
       `template#${id}`
     );
-    if (!template) continue;
+    if (template === null) continue;
 
     for (const child of template.content.childNodes) {
       if (isHTMLElement(child)) {

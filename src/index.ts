@@ -1,9 +1,20 @@
-import { EH_ATTR, REQUEST_ATTR, TEMPLATE_ATTR, handlePropsAttr } from "./attr";
-import { handle as handleWithReqAttr } from "./request";
-import { handle as handleScript } from "./script";
-import { handle as handleStyle } from "./style";
-import { handle as handleTemplate } from "./template";
-import { isHTMLElement, isTaggedHTMLElement } from "./element";
+import { handleEhAttr } from "./lib/eh";
+import { isHTMLElement, isTaggedHTMLElement, store } from "./lib/element";
+import { handlePropsAttr } from "./lib/props";
+import { handleRequestAttr } from "./lib/request";
+import { handleResponseAttr } from "./lib/response";
+import { handleTemplateAttr } from "./lib/template";
+import { handleTriggerAttr } from "./lib/trigger";
+
+function shouldRegister(element: Element) {
+  for (const { name } of element.attributes) {
+    if (name.startsWith("eh-")) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 const observer = new MutationObserver((mutations) => {
   for (const { target, addedNodes } of mutations) {
@@ -12,25 +23,23 @@ const observer = new MutationObserver((mutations) => {
     for (const node of addedNodes) {
       if (!isHTMLElement(node)) continue;
 
-      if (node.hasAttribute(EH_ATTR)) {
-        node.removeAttribute(EH_ATTR);
-
-        const isScript = isTaggedHTMLElement(node, "SCRIPT");
-        if (isScript || isTaggedHTMLElement(node, "STYLE")) {
-          isScript ? handleScript(target, node) : handleStyle(target, node);
-          target.removeChild(node);
-          continue;
-        }
+      if (
+        isTaggedHTMLElement(node, "SCRIPT") ||
+        isTaggedHTMLElement(node, "STYLE")
+      ) {
+        handleEhAttr(node);
+        continue;
       }
 
-      handlePropsAttr(node);
+      if (shouldRegister(node)) {
+        store.register(node);
 
-      if (node.hasAttribute(TEMPLATE_ATTR)) {
-        handleTemplate(node);
-      }
+        handlePropsAttr(node);
+        handleTemplateAttr(node);
+        handleTriggerAttr(node);
+        handleResponseAttr(node);
 
-      if (node.hasAttribute(REQUEST_ATTR)) {
-        handleWithReqAttr(node);
+        handleRequestAttr(node);
       }
     }
   }
