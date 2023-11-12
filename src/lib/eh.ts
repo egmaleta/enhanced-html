@@ -2,13 +2,13 @@ import { EH_ATTR, FROM_TEMPLATE_ATTR, KEY_ATTR, TEMPLATE_ATTR } from "./attr";
 import { isHTMLElement, store, storeVarName } from "./element";
 
 const templateFuncDec = (scriptContent: string, templateName: string) =>
-  `function eh$func$${templateName}($this, $props) {
+  `function eh$func$${templateName}(element, props) {
   ${scriptContent}
 }`;
 
 const funcCall = (key: number, scriptContent: string) => `(function () {
-  const $this = ${storeVarName}.get(${key});
-  const $props = ${storeVarName}.propsOf($this);
+  const element = ${storeVarName}.get(${key});
+  const props = ${storeVarName}.propsOf(element);
   ${scriptContent}
 })()`;
 
@@ -40,7 +40,10 @@ export function handleScript(
       head.appendChild(templScript);
     }
 
-    script.textContent = funcCall(key, `eh$func$${asTemplate}($this, $props);`);
+    script.textContent = funcCall(
+      key,
+      `eh$func$${asTemplate}(element, props);`
+    );
   }
   head.appendChild(script);
 }
