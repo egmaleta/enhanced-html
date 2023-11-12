@@ -52,7 +52,7 @@ function addModifiers(data: TriggerContextData, tokens: string[]) {
   }
 }
 
-export function handleTriggerAttr(element: HTMLElement) {
+export function handleTriggerAttr(element: Element) {
   let attr = element.getAttribute(TRIGGER_ATTR);
   if (attr === null) return;
 

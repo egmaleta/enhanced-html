@@ -1,5 +1,5 @@
 import { REQUEST_ATTR } from "./attr";
-import { getInheritedData, isTaggedHTMLElement, store } from "./element";
+import { getInheritedData, isHTMLElement, store } from "./element";
 import { defaultResponseContextData } from "./response";
 import { defaultTriggerContextData } from "./trigger";
 import type { RequestContextData } from "./types";
@@ -15,16 +15,16 @@ function elementValue(element: Element) {
 function getFormData(element: Element) {
   let fd: FormData | null = null;
 
-  if (isTaggedHTMLElement(element, "FORM")) {
+  if (isHTMLElement(element, "FORM")) {
     fd = new FormData(element);
-  } else if (isTaggedHTMLElement(element, "SELECT")) {
+  } else if (isHTMLElement(element, "SELECT")) {
     fd = new FormData();
     for (const optionElement of element.selectedOptions) {
       fd.append(element.name, optionElement.value);
     }
   } else if (
-    isTaggedHTMLElement(element, "INPUT") ||
-    isTaggedHTMLElement(element, "TEXTAREA")
+    isHTMLElement(element, "INPUT") ||
+    isHTMLElement(element, "TEXTAREA")
   ) {
     fd = new FormData();
     if ("files" in element && element.files !== null) {
@@ -131,7 +131,7 @@ function makeRequest(element: Element, data: RequestContextData) {
     .catch(console.log);
 }
 
-export function handleRequestAttr(element: HTMLElement) {
+export function handleRequestAttr(element: Element) {
   const attr = element.getAttribute(REQUEST_ATTR);
   if (attr === null) return;
 

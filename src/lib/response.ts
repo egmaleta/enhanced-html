@@ -14,7 +14,7 @@ export function defaultResponseContextData(
   };
 }
 
-export function handleResponseAttr(element: HTMLElement) {
+export function handleResponseAttr(element: Element) {
   const attr = element.getAttribute(RESPONSE_ATTR);
   if (attr === null) return;
 

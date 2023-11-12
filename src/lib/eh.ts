@@ -1,5 +1,5 @@
 import { EH_ATTR, FROM_TEMPLATE_ATTR, KEY_ATTR, TEMPLATE_ATTR } from "./attr";
-import { isTaggedHTMLElement, store, storeVarName } from "./element";
+import { isHTMLElement, store, storeVarName } from "./element";
 
 const templateFuncDec = (scriptContent: string, templateName: string) =>
   `function eh$func$${templateName}($this, $props) {
@@ -13,7 +13,7 @@ const funcCall = (key: number, scriptContent: string) => `(function () {
 })()`;
 
 export function handleScript(
-  element: HTMLElement,
+  element: Element,
   sourceScript: HTMLScriptElement,
   asTemplate: string | false = false
 ) {
@@ -48,7 +48,7 @@ export function handleScript(
 const SELF_SELECTOR = /&/g;
 
 export function handleStyle(
-  element: HTMLElement,
+  element: Element,
   sourceStyle: HTMLStyleElement,
   asTemplate: string | false = false
 ) {
@@ -92,7 +92,7 @@ export function handleEhAttr(element: HTMLScriptElement | HTMLStyleElement) {
     if (parent === null) return;
     store.register(parent);
 
-    if (isTaggedHTMLElement(element, "SCRIPT")) {
+    if (isHTMLElement(element, "SCRIPT")) {
       handleScript(parent, element);
     } else {
       handleStyle(parent, element);

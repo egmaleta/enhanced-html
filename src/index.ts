@@ -1,5 +1,5 @@
 import { handleEhAttr } from "./lib/eh";
-import { isHTMLElement, isTaggedHTMLElement, store } from "./lib/element";
+import { isElement, isHTMLElement, store } from "./lib/element";
 import { handlePropsAttr } from "./lib/props";
 import { handleRequestAttr } from "./lib/request";
 import { handleResponseAttr } from "./lib/response";
@@ -18,15 +18,12 @@ function shouldRegister(element: Element) {
 
 const observer = new MutationObserver((mutations) => {
   for (const { target, addedNodes } of mutations) {
-    if (!isHTMLElement(target)) continue;
+    if (!isElement(target)) continue;
 
     for (const node of addedNodes) {
-      if (!isHTMLElement(node)) continue;
+      if (!isElement(node)) continue;
 
-      if (
-        isTaggedHTMLElement(node, "SCRIPT") ||
-        isTaggedHTMLElement(node, "STYLE")
-      ) {
+      if (isHTMLElement(node, "SCRIPT") || isHTMLElement(node, "STYLE")) {
         handleEhAttr(node);
         continue;
       }

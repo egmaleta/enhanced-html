@@ -1,12 +1,13 @@
 import type { RequestContextData } from "./types";
 
-export function isHTMLElement(node: Node): node is HTMLElement {
+export function isElement(node: Node): node is Element {
   return node.nodeType === Node.ELEMENT_NODE;
 }
 
-export function isTaggedHTMLElement<
-  T extends Uppercase<keyof HTMLElementTagNameMap>
->(node: Node, tag: T): node is HTMLElementTagNameMap[Lowercase<T>] {
+export function isHTMLElement<T extends Uppercase<keyof HTMLElementTagNameMap>>(
+  node: Node,
+  tag: T
+): node is HTMLElementTagNameMap[Lowercase<T>] {
   return node.nodeName === tag;
 }
 
