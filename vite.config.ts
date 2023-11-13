@@ -4,7 +4,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: "./src/index.ts",
-      name: "eh",
+      name: "Eh",
       formats: ["umd"],
       fileName: () => "eh.js",
     },
