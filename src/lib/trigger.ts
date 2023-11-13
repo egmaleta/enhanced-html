@@ -2,11 +2,9 @@ import { TRIGGER_ATTR, tokenize } from "./attr";
 import { store } from "./element";
 import type { TriggerContextData } from "./types";
 
-const PATTERN = /^(\S+)?(.*)$/;
-
-const ONCE_MOD = "once";
-const CHANGED_MOD = "changed";
-const FROM_MOD_PATTERN = /^from:(\S+)$/;
+const ONCE_MOD = ":once";
+const CHANGED_MOD = ":changed";
+const FROM_MOD_PATTERN = /^:from:(\S+)$/;
 
 export function defaultTriggerContextData(
   element: Element
@@ -59,16 +57,24 @@ export function handleTriggerAttr(element: Element) {
   const data = store.dataOf(element);
   if (typeof data === "undefined") return;
 
-  const match = PATTERN.exec(attr.trim());
-  if (match !== null) {
-    Object.assign(data, defaultTriggerContextData(element));
+  Object.assign(data, defaultTriggerContextData(element));
 
-    const tokens = tokenize(match[2]);
-    addModifiers(data as TriggerContextData, tokens);
+  const tokens = tokenize(attr);
+  if (tokens.length > 0) {
+    let eventName: string | null = null;
+    let modifiers: string[];
 
-    const event: string | undefined = match[1];
-    if (typeof event !== "undefined") {
-      data.eventName = event;
+    if (!tokens[0].startsWith(":")) {
+      eventName = tokens[0];
+      modifiers = tokens.slice(1);
+    } else {
+      modifiers = tokens;
+    }
+
+    addModifiers(data as TriggerContextData, modifiers);
+
+    if (eventName !== null) {
+      data.eventName = eventName;
     }
   }
 }
