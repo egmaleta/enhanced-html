@@ -39,52 +39,17 @@ function getFormData(element: Element) {
   return fd;
 }
 
-function formData2UrlSearchParams(fd: FormData) {
-  const usp = new URLSearchParams();
-  for (const [name, value] of fd.entries()) {
-    if (typeof value === "string") {
-      usp.append(name, value);
-    }
-  }
-
-  return usp;
-}
-
-function validate(response: Response) {
-  if (response.ok) {
-    const contentType = response.headers.get("Content-Type");
-    if (contentType === null) {
-      return Promise.reject(
-        `eh: 'Content-Type' header not found in response ${response.url}.`
-      );
-    }
-    if (!contentType.startsWith("text/html")) {
-      return Promise.reject(
-        `eh: invalid 'Content-Type' header '${contentType}'.`
-      );
-    }
-
-    return response.text();
-  }
-
-  return Promise.reject(
-    `eh: request failed with status '${response.status} ${response.statusText}'.`
-  );
-}
-
-function getResponseTextHandler(data: RequestContextData) {
+function handleResponseHtml(html: string, data: RequestContextData) {
   const { target, place } = data;
 
-  return function (html: string) {
-    switch (place) {
-      case "inner":
-      case "outer":
-        target[`${place}HTML`] = html;
-        break;
-      default:
-        target.insertAdjacentHTML(place as InsertPosition, html);
-    }
-  };
+  switch (place) {
+    case "inner":
+    case "outer":
+      target[`${place}HTML`] = html;
+      break;
+    default:
+      target.insertAdjacentHTML(place as InsertPosition, html);
+  }
 }
 
 function makeRequest(element: Element, data: RequestContextData) {
@@ -99,36 +64,54 @@ function makeRequest(element: Element, data: RequestContextData) {
 
   const { method, url } = data;
 
-  const formData = getFormData(element);
+  const xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function () {
+    if (this.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
+      const responseContentType = this.getResponseHeader("Content-Type");
+      if (
+        responseContentType === null ||
+        !responseContentType.startsWith("text/html")
+      ) {
+        this.abort();
+        return;
+      }
+    }
 
-  const headers: Record<string, string> = {
-    Accept: "text/html",
+    if (this.readyState === XMLHttpRequest.DONE) {
+      const status = this.status;
+      if (status >= 200 && status < 400) {
+        handleResponseHtml(this.responseText, data);
+      }
+    }
   };
 
-  const encoding =
-    formData !== null
-      ? data.method === "get"
-        ? "application/x-www-form-urlencoded"
-        : "multipart/form-data"
-      : false;
-  if (encoding) {
-    headers["Content-Type"] = encoding;
-  }
+  const formData = getFormData(element);
 
-  let body: typeof formData | URLSearchParams = formData;
-  if (encoding === "application/x-www-form-urlencoded") {
-    body = formData2UrlSearchParams(formData!);
-  }
+  if (method === "get") {
+    // get data from element (if any) and add it to url
+    const urlCopy = new URL(url);
+    if (formData) {
+      for (const [name, value] of formData.entries()) {
+        if (typeof value === "string") {
+          urlCopy.searchParams.append(name, value);
+        }
+      }
+    }
 
-  fetch(url, {
-    method,
-    headers,
-    mode: "same-origin",
-    body,
-  })
-    .then(validate)
-    .then(getResponseTextHandler(data))
-    .catch(console.log);
+    xhr.open(method, urlCopy);
+    xhr.send();
+  } else {
+    xhr.open(method, url);
+
+    if (formData !== null) {
+      const encoding = isHTMLElement(element, "FORM")
+        ? element.encoding
+        : "multipart/form-data";
+      xhr.setRequestHeader("Content-Type", encoding);
+    }
+
+    xhr.send(formData);
+  }
 }
 
 export function handleRequestAttr(element: Element) {
