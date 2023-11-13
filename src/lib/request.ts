@@ -1,12 +1,8 @@
-import { REQUEST_ATTR } from "./attr";
+import { REQUEST_ATTR_PATTERN } from "./attr";
 import { getInheritedData, isHTMLElement, store } from "./element";
 import { defaultResponseContextData } from "./response";
 import { defaultTriggerContextData } from "./trigger";
 import type { RequestContextData } from "./types";
-
-const PATTERN = /^(get|post|put|patch|delete)?\s*(\S+)$/;
-
-const DEFAULT_METHOD = "get";
 
 function elementValue(element: Element) {
   return (element as any).value;
@@ -62,7 +58,8 @@ function makeRequest(element: Element, data: RequestContextData) {
     data.lastValue = value;
   }
 
-  const { method, url } = data;
+  const { method, pathName } = data;
+  const url = new URL(pathName, window.location.origin);
 
   const xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function () {
@@ -88,17 +85,15 @@ function makeRequest(element: Element, data: RequestContextData) {
   const formData = getFormData(element);
 
   if (method === "get") {
-    // get data from element (if any) and add it to url
-    const urlCopy = new URL(url);
     if (formData) {
       for (const [name, value] of formData.entries()) {
         if (typeof value === "string") {
-          urlCopy.searchParams.append(name, value);
+          url.searchParams.append(name, value);
         }
       }
     }
 
-    xhr.open(method, urlCopy);
+    xhr.open(method, url);
     xhr.send();
   } else {
     xhr.open(method, url);
@@ -115,16 +110,22 @@ function makeRequest(element: Element, data: RequestContextData) {
 }
 
 export function handleRequestAttr(element: Element) {
-  const attr = element.getAttribute(REQUEST_ATTR);
-  if (attr === null) return;
-
-  const match = PATTERN.exec(attr.trim());
-  if (match === null) return;
+  let method: string | null = null;
+  let pathName: string | null = null;
+  for (const { name, value } of element.attributes) {
+    const match = REQUEST_ATTR_PATTERN.exec(name);
+    if (match !== null) {
+      method = match[1];
+      pathName = value;
+      break;
+    }
+  }
+  if (method === null || pathName === null) return;
 
   const data = Object.assign(
     {
-      method: match[1] ?? DEFAULT_METHOD,
-      url: new URL(match[2], window.location.origin),
+      method,
+      pathName,
     },
     defaultTriggerContextData(element),
     defaultResponseContextData(element),

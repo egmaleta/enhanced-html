@@ -13,7 +13,7 @@ export type ResponseContextData = {
 
 export type RequestContextData = {
   method: string;
-  url: URL;
+  pathName: string;
 
   lastValue?: any;
 } & TriggerContextData &
