@@ -1,5 +1,5 @@
 import { EH_ATTR, FROM_TEMPLATE_ATTR, KEY_ATTR, TEMPLATE_ATTR } from "./attr";
-import { isHTMLElement, store, storeVarName } from "./element";
+import { isHTMLElement, store } from "./element";
 
 const templateFuncDec = (scriptContent: string, templateName: string) =>
   `function eh$func$${templateName}(element, props) {
@@ -7,8 +7,8 @@ const templateFuncDec = (scriptContent: string, templateName: string) =>
 }`;
 
 const funcCall = (key: number, scriptContent: string) => `(function () {
-  const element = ${storeVarName}.get(${key});
-  const props = ${storeVarName}.propsOf(element);
+  const element = Eh.store.get(${key});
+  const props = Eh.store.propsOf(element);
   ${scriptContent}
 })()`;
 

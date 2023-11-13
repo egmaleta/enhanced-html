@@ -50,11 +50,6 @@ export const store = {
   },
 };
 
-export const storeVarName = "eh$elements";
-if (!(storeVarName in window)) {
-  Object.defineProperty(window, storeVarName, { value: store });
-}
-
 export function getInheritedData(
   element: Element
 ): Partial<RequestContextData> {

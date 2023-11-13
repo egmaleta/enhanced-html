@@ -54,4 +54,4 @@ observer.observe(document, {
   childList: true,
 });
 
-export { observer };
+export { store, observer };
