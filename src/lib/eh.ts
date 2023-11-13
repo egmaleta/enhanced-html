@@ -87,20 +87,17 @@ export function handleStyle(
   }
 }
 
-export function handleEhAttr(element: HTMLScriptElement | HTMLStyleElement) {
+export function handleEhAttr(
+  element: Element,
+  child: HTMLScriptElement | HTMLStyleElement
+) {
   if (element.hasAttribute(EH_ATTR)) {
-    element.removeAttribute(EH_ATTR);
-
-    const parent = element.parentElement;
-    if (parent === null) return;
-    store.register(parent);
-
-    if (isHTMLElement(element, "SCRIPT")) {
-      handleScript(parent, element);
+    if (isHTMLElement(child, "SCRIPT")) {
+      handleScript(element, child);
     } else {
-      handleStyle(parent, element);
+      handleStyle(element, child);
     }
 
-    parent.removeChild(element);
+    element.removeChild(child);
   }
 }

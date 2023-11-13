@@ -1,3 +1,4 @@
+import { EH_ATTR } from "./lib/attr";
 import { handleEhAttr } from "./lib/eh";
 import { isElement, isHTMLElement, store } from "./lib/element";
 import { handlePropsAttr } from "./lib/props";
@@ -8,7 +9,7 @@ import { handleTriggerAttr } from "./lib/trigger";
 
 function shouldRegister(element: Element) {
   for (const { name } of element.attributes) {
-    if (name.startsWith("eh-")) {
+    if (name.startsWith("eh-") || name === EH_ATTR) {
       return true;
     }
   }
@@ -24,7 +25,13 @@ const observer = new MutationObserver((mutations) => {
       if (!isElement(node)) continue;
 
       if (isHTMLElement(node, "SCRIPT") || isHTMLElement(node, "STYLE")) {
-        handleEhAttr(node);
+        // eh attr is the last attr to handle because
+        // the handling occurs when the element is the
+        // target in a mutation
+        //
+        // the rest of the attrs are handled when the
+        // element is added
+        handleEhAttr(target, node);
         continue;
       }
 
