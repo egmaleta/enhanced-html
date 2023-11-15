@@ -1,4 +1,10 @@
-import { EH_ATTR, FROM_TEMPLATE_ATTR, KEY_ATTR, TEMPLATE_ATTR } from "./attr";
+import {
+  EH_ATTR,
+  FOR_ATTR,
+  FROM_TEMPLATE_ATTR,
+  KEY_ATTR,
+  TEMPLATE_ATTR,
+} from "./attr";
 import { isHTMLElement, store } from "./element";
 
 const templateFuncDec = (scriptContent: string, templateName: string) =>
@@ -50,6 +56,26 @@ export function handleScript(
 
 const SELF_SELECTOR = /&/g;
 
+function normalizeCSSStyleRule(rule: CSSStyleRule, selector: string) {
+  rule.selectorText = rule.selectorText.replace(SELF_SELECTOR, selector);
+}
+
+function normalizeStyleSheet(sheet: CSSStyleSheet, selector: string) {
+  if (sheet !== null) {
+    for (const rule of sheet.cssRules) {
+      if (rule instanceof CSSStyleRule) {
+        normalizeCSSStyleRule(rule, selector);
+      } else if (rule instanceof CSSMediaRule) {
+        for (const innerRule of rule.cssRules) {
+          if (innerRule instanceof CSSStyleRule) {
+            normalizeCSSStyleRule(innerRule, selector);
+          }
+        }
+      }
+    }
+  }
+}
+
 export function handleStyle(
   element: Element,
   sourceStyle: HTMLStyleElement,
@@ -61,28 +87,24 @@ export function handleStyle(
   if (typeof key === "undefined") return;
 
   const head = document.head;
-
-  if (asTemplate === false) {
-    element.setAttribute(KEY_ATTR, key.toString());
-
+  if (
+    asTemplate === false ||
+    head.querySelector(`style[${FROM_TEMPLATE_ATTR}="${asTemplate}"]`) === null
+  ) {
     const style = document.createElement("style");
-    style.textContent = sourceStyle.textContent.replace(
-      SELF_SELECTOR,
-      `[${KEY_ATTR}="${key}"]`
-    );
+    style.textContent = sourceStyle.textContent;
+
     head.appendChild(style);
-  } else {
-    if (
-      head.querySelector(`style[${FROM_TEMPLATE_ATTR}="${asTemplate}"]`) ===
-      null
-    ) {
-      const style = document.createElement("style");
+    const sheet = style.sheet!;
+
+    if (asTemplate === false) {
+      element.setAttribute(KEY_ATTR, key.toString());
+
+      normalizeStyleSheet(sheet, `[${KEY_ATTR}="${key}"]`);
+      style.setAttribute(FOR_ATTR, `${key}`);
+    } else {
+      normalizeStyleSheet(sheet, `[${TEMPLATE_ATTR}~="${asTemplate}"]`);
       style.setAttribute(FROM_TEMPLATE_ATTR, asTemplate);
-      style.textContent = sourceStyle.textContent.replace(
-        SELF_SELECTOR,
-        `[${TEMPLATE_ATTR}~="${asTemplate}"]`
-      );
-      head.appendChild(style);
     }
   }
 }

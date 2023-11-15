@@ -1,4 +1,5 @@
 export const FROM_TEMPLATE_ATTR = "eh-from-template";
+export const FOR_ATTR = "eh-for";
 export const KEY_ATTR = "eh-key";
 
 // used by devs
