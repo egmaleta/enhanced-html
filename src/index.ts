@@ -3,7 +3,7 @@ import { handleEhAttr } from "./lib/eh";
 import { isElement, isHTMLElement, store } from "./lib/element";
 import { handlePropsAttr } from "./lib/props";
 import { handleRequestAttr } from "./lib/request";
-import { handleResponseAttr } from "./lib/response";
+import { handleTargetAttr, handleSwapAttr } from "./lib/response";
 import { handleTemplateAttr } from "./lib/template";
 import { handleTriggerAttr } from "./lib/trigger";
 
@@ -41,7 +41,8 @@ const observer = new MutationObserver((mutations) => {
         handlePropsAttr(node);
         handleTemplateAttr(node);
         handleTriggerAttr(node);
-        handleResponseAttr(node);
+        handleTargetAttr(node);
+        handleSwapAttr(node);
 
         handleRequestAttr(node);
       }

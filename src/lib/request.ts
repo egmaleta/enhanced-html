@@ -1,8 +1,8 @@
 import { REQUEST_ATTR_PATTERN } from "./attr";
 import { getInheritedData, isHTMLElement, store } from "./element";
-import { defaultResponseContextData } from "./response";
+import { DEFAULT_PLACE } from "./response";
 import { defaultTriggerContextData } from "./trigger";
-import type { RequestContextData } from "./types";
+import type { RequestContextData, ResponseContextData } from "./types";
 
 function elementValue(element: Element) {
   return (element as any).value;
@@ -35,13 +35,13 @@ function getFormData(element: Element) {
   return fd;
 }
 
-function handleResponseHtml(html: string, data: RequestContextData) {
+function handleResponseHtml(html: string, data: ResponseContextData) {
   const { target, place } = data;
 
   switch (place) {
-    case "inner":
-    case "outer":
-      target[`${place}HTML`] = html;
+    case "innerHTML":
+    case "outerHTML":
+      target[place] = html;
       break;
     default:
       target.insertAdjacentHTML(place as InsertPosition, html);
@@ -128,7 +128,7 @@ export function handleRequestAttr(element: Element) {
       pathName,
     },
     defaultTriggerContextData(element),
-    defaultResponseContextData(element),
+    { target: element, place: DEFAULT_PLACE },
     getInheritedData(element),
     store.dataOf(element)
   ) as RequestContextData;

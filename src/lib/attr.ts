@@ -6,7 +6,8 @@ export const EH_ATTR = "eh";
 export const TEMPLATE_ATTR = "eh-template";
 export const PROPS_ATTR = "eh-props";
 export const REQUEST_ATTR_PATTERN = /^eh-(get|post|put|patch|delete)$/;
-export const RESPONSE_ATTR = "eh-response";
+export const TARGET_ATTR = "eh-target";
+export const SWAP_ATTR = "eh-swap";
 export const TRIGGER_ATTR = "eh-trigger";
 
 const EXTRA_SPACE = /\s+/;
